@@ -25,8 +25,8 @@ export const Tabs = () => {
     const {
         query: { orgId },
     } = useRouter()
-    // const base = `/org/${orgId}`
-    const base = `/org`
+    const base = `/org/${orgId}`
+
     return [
         <TabLink
             key='1'

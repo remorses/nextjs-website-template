@@ -9,9 +9,11 @@ import { Fragment, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import { AppError } from '@app/utils'
 import toast, { Toaster } from 'react-hot-toast'
-import { DashboardLayout } from 'beskar/src/DashboardLayout'
+import { BeskarProvider } from 'beskar/src/BeskarProvider'
 import { MyFooter, MyHeader } from '@app/components/specific'
 import colors from 'tailwindcss/colors'
+import React from 'react'
+import { createOrg, getUserOrgs } from './api/functions'
 
 colors.gray = colors.neutral
 
@@ -55,6 +57,8 @@ const darkTheme = createTheme({
     },
 })
 
+const DashboardLayout = React.lazy(() => import('beskar/src/DashboardLayout'))
+
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
     const router = useRouter()
     const Wrapper: any = useMemo(() => {
@@ -88,25 +92,27 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
     }, [])
     return (
         <SessionProvider session={session}>
-            <ThemeProvider
-                defaultTheme='light'
-                enableSystem={true}
-                attribute='class'
-                value={{
-                    light: lightTheme.className,
-                    dark: darkTheme.className,
-                }}
-            >
-                <Toaster
-                    containerStyle={{ zIndex: 10000 }}
-                    position='top-center'
-                />
-                <NextUIProvider disableBaseline>
-                    <Wrapper Tabs={Component.Tabs}>
-                        <Component {...pageProps} />
-                    </Wrapper>
-                </NextUIProvider>
-            </ThemeProvider>
+            <BeskarProvider {...{ createOrg, getUserOrgs }}>
+                <ThemeProvider
+                    defaultTheme='light'
+                    enableSystem={true}
+                    attribute='class'
+                    value={{
+                        light: lightTheme.className,
+                        dark: darkTheme.className,
+                    }}
+                >
+                    <Toaster
+                        containerStyle={{ zIndex: 10000 }}
+                        position='top-center'
+                    />
+                    <NextUIProvider disableBaseline>
+                        <Wrapper Tabs={Component.Tabs}>
+                            <Component {...pageProps} />
+                        </Wrapper>
+                    </NextUIProvider>
+                </ThemeProvider>
+            </BeskarProvider>
         </SessionProvider>
     )
 }
