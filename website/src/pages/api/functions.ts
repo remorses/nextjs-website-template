@@ -12,7 +12,10 @@ export const getUserOrgs: BeskarContext['getUserOrgs'] = async () => {
     // const { req } = getContext()
     return {
         defaultOrgId: 'xxx',
-        orgs: [{ id: 'xxx', name: 'xxx' }],
+        orgs: [
+            { id: 'xxx', name: 'xxx' },
+            { id: 'yyy', name: 'some-other-org' },
+        ],
     }
     // const { userId, defaultOrgId } = await getJwt({ req })
 

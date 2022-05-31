@@ -61,8 +61,10 @@ const DashboardLayout = React.lazy(() => import('beskar/src/DashboardLayout'))
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
     const router = useRouter()
+    const isDashboard = router.asPath.startsWith('/org')
     const Wrapper: any = useMemo(() => {
-        if (router.asPath.startsWith('/org')) {
+        // console.log(`Creating wrapper`)
+        if (isDashboard) {
             return ({ Tabs, children, ...rest }) => (
                 <DashboardLayout
                     header={<MyHeader />}
@@ -75,7 +77,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
             )
         }
         return ({ children }) => <Fragment>{children}</Fragment>
-    }, [router.asPath])
+    }, [isDashboard])
     useEffect(() => {
         if (process.env.NODE_ENV !== 'production') {
             window.loginForTests = ({ name, email }) => {
