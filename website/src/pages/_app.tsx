@@ -58,7 +58,7 @@ const darkTheme = createTheme({
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
     const router = useRouter()
     const Wrapper: any = useMemo(() => {
-        if (router.asPath.startsWith('/app')) {
+        if (router.asPath.startsWith('/org')) {
             return ({ Tabs, children, ...rest }) => (
                 <DashboardLayout
                     header={<MyHeader />}
