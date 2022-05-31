@@ -1,9 +1,24 @@
-import { CogIcon, FolderIcon } from '@heroicons/react/outline'
+import { CogIcon, FolderIcon } from '@heroicons/react/solid'
 import { TabLink } from 'beskar/src/Tabs'
+import { Alert, TableBlock } from 'beskar/dashboard'
 import { useRouter } from 'next/router'
 
 function Page({}) {
-    return null
+    return (
+        <>
+            <Alert
+                // type='error'
+                description='Hello'
+                title={'Hello, happy to see you'}
+                className=''
+            ></Alert>
+            <TableBlock
+                head={['ciao']}
+                rows={[['xxx']]}
+                className=''
+            ></TableBlock>
+        </>
+    )
 }
 
 export const Tabs = () => {
