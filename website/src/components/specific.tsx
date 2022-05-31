@@ -44,6 +44,7 @@ export function MyFooter({}) {
 function AvatarMenu({ imgSrc = '' }) {
     const { toggleColorMode, isDark } = useColorMode()
     const router = useRouter()
+    const { data: session } = useSession()
     const orgId = router.query.orgId
     let avatar = (
         <div className=''>
@@ -52,7 +53,7 @@ function AvatarMenu({ imgSrc = '' }) {
                 // textColor={'white'}
                 // color='gradient'
                 className={'border'}
-                name={'hello'}
+                name={session?.user?.name}
             />
         </div>
     )
