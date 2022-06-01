@@ -8,15 +8,15 @@ export * from './generated'
 
 interface Database {
    Account: types.SqlAccount,
-    User: types.SqlUser,
-    VerificationToken: types.SqlVerificationToken,
-    OrgsUsers: types.SqlOrgsUsers,
-    Org: types.SqlOrg,
-    Product: types.SqlProduct,
-    Price: types.SqlPrice,
-    Subscription: types.SqlSubscription,
     Campaign: types.SqlCampaign,
-    ScrapedTweet: types.SqlScrapedTweet
+    Org: types.SqlOrg,
+    OrgsUsers: types.SqlOrgsUsers,
+    Price: types.SqlPrice,
+    Product: types.SqlProduct,
+    ScrapedTweet: types.SqlScrapedTweet,
+    Subscription: types.SqlSubscription,
+    User: types.SqlUser,
+    VerificationToken: types.SqlVerificationToken
 }
 
 // only 1 connection at a time because initial connection is slow af

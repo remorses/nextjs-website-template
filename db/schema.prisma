@@ -10,9 +10,8 @@ generator jsonSchema {
 }
 
 generator kysely {
-    provider                 = "prisma-generator-kysely"
-    keepRelationScalarFields = "true"
-    schemaId                 = "some-schema-id"
+    provider = "prisma-generator-kysely"
+    
 }
 
 datasource db {

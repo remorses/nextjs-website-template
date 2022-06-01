@@ -7,7 +7,7 @@ import { transformDMMF } from './transformDMMF'
 
 const { version } = require('../package.json')
 
-import { inferSchema, inferTable } from 'mysql-schema-ts'
+import { inferSchema, inferSchemaObject } from 'mysql-schema-ts'
 
 const prefix = 'Sql'
 
@@ -34,14 +34,18 @@ generatorHandler({
         url.searchParams.delete('sslaccept')
         // url.searchParams.set('ssl', '{"rejectUnauthorized":true}')
         const code = await inferSchema(url.toString(), prefix)
+        const obj = await inferSchemaObject(url.toString())
         fs.writeFileSync(path.resolve(out, './generated.ts'), code)
-        fs.writeFileSync(path.resolve(out, './client.ts'), mainCode(options))
+        fs.writeFileSync(
+            path.resolve(out, './client.ts'),
+            mainCode(obj.map((x) => x.name)),
+        )
         console.log('Finished generating types')
         return
     },
 })
 
-const mainCode = (options: GeneratorOptions) => `
+const mainCode = (tables: string[]) => `
 import { Kysely, MysqlDialect } from 'kysely'
 import { createPool } from 'mysql2'
 
@@ -50,9 +54,7 @@ import * as types from './generated'
 export * from './generated'
 
 interface Database {
-   ${options.dmmf.datamodel.models
-       .map((x) => x.name + ': ' + 'types.' + prefix + x.name)
-       .join(',\n    ')}
+   ${tables.map((x) => x + ': ' + 'types.' + prefix + x).join(',\n    ')}
 }
 
 // only 1 connection at a time because initial connection is slow af
