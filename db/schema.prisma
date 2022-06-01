@@ -1,0 +1,186 @@
+generator client {
+    provider        = "prisma-client-js"
+    previewFeatures = ["referentialIntegrity"]
+}
+
+generator jsonSchema {
+    provider                 = "prisma-json-schema-generator"
+    keepRelationScalarFields = "true"
+    schemaId                 = "some-schema-id"
+}
+
+generator kysely {
+    provider                 = "prisma-generator-kysely-generator"
+    keepRelationScalarFields = "true"
+    schemaId                 = "some-schema-id"
+}
+
+datasource db {
+    provider             = "mysql"
+    url                  = "mysql://root:prisma@localhost:3306/db"
+    referentialIntegrity = "prisma"
+}
+
+model Account {
+    id                 String   @id @default(cuid())
+    userId             String
+    type               String
+    provider           String
+    providerAccountId  String
+    refresh_token      String?
+    access_token       String?
+    expires_at         Int?
+    token_type         String?
+    scope              String?
+    id_token           String?  @db.Text
+    session_state      String?
+    oauth_token_secret String?
+    oauth_token        String?  @db.Text
+    createdAt          DateTime @default(now())
+    user               User     @relation(fields: [userId], references: [id])
+
+    @@unique([provider, providerAccountId])
+    @@index([userId])
+}
+
+model User {
+    id            String      @id @default(cuid())
+    name          String?
+    email         String?     @unique
+    emailVerified DateTime?
+    image         String?
+    accounts      Account[]
+    orgs          OrgsUsers[]
+    defaultOrgId  String?
+}
+
+model VerificationToken {
+    identifier String
+    token      String   @unique
+    expires    DateTime
+
+    @@unique([identifier, token])
+}
+
+model OrgsUsers {
+    userId String
+    user   User     @relation(fields: [userId], references: [id])
+    orgId  String
+    org    Org      @relation(fields: [orgId], references: [id])
+    role   UserRole @default(user)
+
+    @@id([userId, orgId])
+}
+
+model Org {
+    id            String         @id @default(cuid())
+    name          String         @unique
+    users         OrgsUsers[]
+    subscriptions Subscription[]
+    Campaign      Campaign[]
+}
+
+model Product {
+    isSandbox      Boolean
+    paddleId       String         @id
+    name           String
+    active         Boolean        @default(true) @map("xxxx")
+    image          String?
+    billing_type   String
+    billing_period Int
+    trial_days     Int
+    createdAt      DateTime       @default(now())
+    subscriptions  Subscription[]
+    prices         Price[]
+}
+
+model Price {
+    isSandbox  Boolean
+    paddleId   String
+    product    Product  @relation(fields: [paddleId], references: [paddleId])
+    currency   String
+    unitAmount Int
+    createdAt  DateTime @default(now())
+
+    @@unique([paddleId, currency, unitAmount])
+}
+
+model Subscription {
+    paddleUserId                String
+    isSandbox                   Boolean
+    id                          String             @id @default(cuid())
+    product                     Product            @relation(fields: [productId], references: [paddleId])
+    productId                   String
+    paddleSubscriptionId        String             @unique
+    status                      SubscriptionStatus
+    cancel_url                  String?
+    update_url                  String?
+    paddleEmail                 String?
+    marketing_consent           Boolean?
+    paused_at                   DateTime?
+    paused_reason               String?
+    paused_from                 DateTime?
+    start_date                  DateTime?
+    unit_price                  String?
+    currency                    String?
+    canceled_at                 DateTime?
+    cancellation_effective_date DateTime?
+    createdAt                   DateTime           @default(now())
+    org                         Org                @relation(fields: [orgId], references: [id])
+    orgId                       String
+
+    @@index([orgId])
+    @@index([productId])
+}
+
+enum UserRole {
+    admin
+    user
+}
+
+enum SubscriptionStatus {
+    past_due
+    active
+    paused
+    trialing
+    deleted
+}
+
+// custom rows
+
+model Campaign {
+    id   String  @id @default(cuid())
+    name String? @db.Text
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    twitterQueries Json           @default("[]")
+    scrapedTweets  ScrapedTweet[]
+
+
+    org   Org    @relation(fields: [orgId], references: [id])
+    orgId String
+}
+
+model ScrapedTweet {
+    id         String          @id @default(cuid())
+    tweetId    String
+    campaign   Campaign        @relation(fields: [campaignId], references: [id])
+    campaignId String
+    createdAt  DateTime        @default(now())
+    state      ScrapedState    @default(waiting)
+    platform   ScrapedPlatform @default(twitter)
+}
+
+enum ScrapedPlatform {
+    twitter
+    reddit
+    hackernews
+}
+
+enum ScrapedState {
+    waiting
+    skipped
+    replied
+}

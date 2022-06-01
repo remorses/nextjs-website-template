@@ -1,3 +1,5 @@
 packages:
   - website
   - beskar
+  - db
+  - prisma-generator-kysely-generator

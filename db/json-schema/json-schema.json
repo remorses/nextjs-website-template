@@ -1,0 +1,516 @@
+{
+  "$id": "some-schema-id",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Account": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "providerAccountId": {
+          "type": "string"
+        },
+        "refresh_token": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "access_token": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "expires_at": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "token_type": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "scope": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "id_token": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "session_state": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "oauth_token_secret": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "oauth_token": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "user": {
+          "$ref": "some-schema-id#/definitions/User"
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "email": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "emailVerified": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "image": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "accounts": {
+          "type": "array",
+          "items": {
+            "$ref": "some-schema-id#/definitions/Account"
+          }
+        },
+        "orgs": {
+          "type": "array",
+          "items": {
+            "$ref": "some-schema-id#/definitions/OrgsUsers"
+          }
+        },
+        "defaultOrgId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "VerificationToken": {
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        },
+        "expires": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "OrgsUsers": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "user": {
+          "$ref": "some-schema-id#/definitions/User"
+        },
+        "orgId": {
+          "type": "string"
+        },
+        "org": {
+          "$ref": "some-schema-id#/definitions/Org"
+        },
+        "role": {
+          "type": "string",
+          "default": "user",
+          "enum": [
+            "admin",
+            "user"
+          ]
+        }
+      }
+    },
+    "Org": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "some-schema-id#/definitions/OrgsUsers"
+          }
+        },
+        "subscriptions": {
+          "type": "array",
+          "items": {
+            "$ref": "some-schema-id#/definitions/Subscription"
+          }
+        },
+        "Campaign": {
+          "type": "array",
+          "items": {
+            "$ref": "some-schema-id#/definitions/Campaign"
+          }
+        }
+      }
+    },
+    "Product": {
+      "type": "object",
+      "properties": {
+        "isSandbox": {
+          "type": "boolean"
+        },
+        "paddleId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "active": {
+          "type": "boolean",
+          "default": true
+        },
+        "image": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "billing_type": {
+          "type": "string"
+        },
+        "billing_period": {
+          "type": "integer"
+        },
+        "trial_days": {
+          "type": "integer"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "subscriptions": {
+          "type": "array",
+          "items": {
+            "$ref": "some-schema-id#/definitions/Subscription"
+          }
+        },
+        "prices": {
+          "type": "array",
+          "items": {
+            "$ref": "some-schema-id#/definitions/Price"
+          }
+        }
+      }
+    },
+    "Price": {
+      "type": "object",
+      "properties": {
+        "isSandbox": {
+          "type": "boolean"
+        },
+        "paddleId": {
+          "type": "string"
+        },
+        "product": {
+          "$ref": "some-schema-id#/definitions/Product"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "unitAmount": {
+          "type": "integer"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Subscription": {
+      "type": "object",
+      "properties": {
+        "paddleUserId": {
+          "type": "string"
+        },
+        "isSandbox": {
+          "type": "boolean"
+        },
+        "id": {
+          "type": "string"
+        },
+        "product": {
+          "$ref": "some-schema-id#/definitions/Product"
+        },
+        "productId": {
+          "type": "string"
+        },
+        "paddleSubscriptionId": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "past_due",
+            "active",
+            "paused",
+            "trialing",
+            "deleted"
+          ]
+        },
+        "cancel_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "update_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "paddleEmail": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "marketing_consent": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "paused_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "paused_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "paused_from": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "start_date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "unit_price": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "currency": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "canceled_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "cancellation_effective_date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "org": {
+          "$ref": "some-schema-id#/definitions/Org"
+        },
+        "orgId": {
+          "type": "string"
+        }
+      }
+    },
+    "Campaign": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "twitterQueries": {
+          "type": [
+            "number",
+            "string",
+            "boolean",
+            "object",
+            "array",
+            "null"
+          ]
+        },
+        "scrapedTweets": {
+          "type": "array",
+          "items": {
+            "$ref": "some-schema-id#/definitions/ScrapedTweet"
+          }
+        },
+        "org": {
+          "$ref": "some-schema-id#/definitions/Org"
+        },
+        "orgId": {
+          "type": "string"
+        }
+      }
+    },
+    "ScrapedTweet": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "tweetId": {
+          "type": "string"
+        },
+        "campaign": {
+          "$ref": "some-schema-id#/definitions/Campaign"
+        },
+        "campaignId": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "state": {
+          "type": "string",
+          "default": "waiting",
+          "enum": [
+            "waiting",
+            "skipped",
+            "replied"
+          ]
+        },
+        "platform": {
+          "type": "string",
+          "default": "twitter",
+          "enum": [
+            "twitter",
+            "reddit",
+            "hackernews"
+          ]
+        }
+      }
+    }
+  },
+  "type": "object",
+  "properties": {
+    "account": {
+      "$ref": "some-schema-id#/definitions/Account"
+    },
+    "user": {
+      "$ref": "some-schema-id#/definitions/User"
+    },
+    "verificationToken": {
+      "$ref": "some-schema-id#/definitions/VerificationToken"
+    },
+    "orgsUsers": {
+      "$ref": "some-schema-id#/definitions/OrgsUsers"
+    },
+    "org": {
+      "$ref": "some-schema-id#/definitions/Org"
+    },
+    "product": {
+      "$ref": "some-schema-id#/definitions/Product"
+    },
+    "price": {
+      "$ref": "some-schema-id#/definitions/Price"
+    },
+    "subscription": {
+      "$ref": "some-schema-id#/definitions/Subscription"
+    },
+    "campaign": {
+      "$ref": "some-schema-id#/definitions/Campaign"
+    },
+    "scrapedTweet": {
+      "$ref": "some-schema-id#/definitions/ScrapedTweet"
+    }
+  }
+}
