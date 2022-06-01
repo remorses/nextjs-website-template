@@ -1,1 +1,1 @@
-export const GENERATOR_NAME = 'prisma-generator-kysely-generator'
+export const GENERATOR_NAME = 'prisma-generator-kysely'

@@ -2,4 +2,4 @@ packages:
   - website
   - beskar
   - db
-  - prisma-generator-kysely-generator
+  - prisma-generator-kysely

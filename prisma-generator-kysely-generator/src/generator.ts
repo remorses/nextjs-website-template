@@ -7,6 +7,10 @@ import { transformDMMF } from './transformDMMF'
 
 const { version } = require('../package.json')
 
+import { inferSchema, inferTable } from 'mysql-schema-ts'
+
+const prefix = 'Sql'
+
 generatorHandler({
     onManifest(config) {
         // config.config
@@ -18,28 +22,75 @@ generatorHandler({
         }
     },
     onGenerate: async (options: GeneratorOptions) => {
-        const code = transformDMMF(options.dmmf, options.generator.config)
-        if (options.generator.output) {
-            // console.log(options.generator.output)
-            const outputDir: string = options.generator.output?.value as any
-            try {
-                await fs.promises.mkdir(outputDir, {
-                    recursive: true,
-                })
-                await fs.promises.writeFile(
-                    path.join(outputDir, 'types.ts'),
-                    code as string,
-                )
-            } catch (e) {
-                console.error(
-                    'Error: unable to write files for Prisma Schema Generator',
-                )
-                throw e
-            }
-        } else {
-            throw new Error(
-                'No output was specified for Prisma Schema Generator',
-            )
+        const DATABASE_URL = options.datasources.find(
+            (x) => x.provider === 'mysql',
+        )!.url.value
+        if (!DATABASE_URL) {
+            throw new Error(`Only works with mysql for now`)
         }
+        const url = new URL(DATABASE_URL)
+        url.searchParams.delete('sslaccept')
+        // url.searchParams.set('ssl', '{"rejectUnauthorized":true}')
+        const code = await inferSchema(url.toString(), prefix)
+        fs.writeFileSync(path.resolve('./generated.ts'), code)
+        fs.writeFileSync(path.resolve('./client.ts'), mainCode(options))
+        console.log('Finished generating types')
+        return
     },
 })
+
+const mainCode = (options: GeneratorOptions) => `
+import { Kysely, MysqlDialect } from 'kysely'
+import { createPool } from 'mysql2'
+
+import * as types from './generated'
+
+export * from './generated'
+
+interface Database {
+   ${options.dmmf.datamodel.models
+       .map((x) => x.name + ': ' + 'types.' + prefix + x.name)
+       .join(',\n    ')}
+}
+
+// only 1 connection at a time because initial connection is slow af
+const pool = createPool({
+    enableKeepAlive: true,
+    connectionLimit: 30,
+    waitForConnections: true,
+    ...parseUrl(process.env.DATABASE_URL),
+    ssl: { rejectUnauthorized: true },
+})
+
+export const db = new Kysely<Database>({
+    dialect: new MysqlDialect({
+        pool: pool,
+    }),
+})
+
+function parseUrl(url) {
+    const parsedUrl = new URL(url)
+    const options: any = {
+        host: parsedUrl.hostname,
+        port: parsedUrl.port,
+        database: parsedUrl.pathname.substr(1),
+        user: parsedUrl.username,
+        password: parsedUrl.password,
+    }
+    parsedUrl.searchParams.forEach((value, key) => {
+        // this is passed with the prisma url, ignore it
+        if (key === 'sslaccept') {
+            return
+        }
+        try {
+            // Try to parse this as a JSON expression first
+            options[key] = JSON.parse(value)
+        } catch (err) {
+            // Otherwise assume it is a plain string
+            options[key] = value
+        }
+    })
+    return options
+}
+
+`
