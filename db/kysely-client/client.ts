@@ -24,8 +24,8 @@ const pool = createPool({
     enableKeepAlive: true,
     connectionLimit: 30,
     waitForConnections: true,
+    // ssl: { rejectUnauthorized: true },
     ...parseUrl(process.env.DATABASE_URL),
-    ssl: { rejectUnauthorized: true },
 })
 
 export const db = new Kysely<Database>({

@@ -78,6 +78,10 @@ export default NextAuth({
             if (isNewUser) {
                 token.isNewUser = true
             }
+            if (typeof user?.defaultOrgId === 'string') {
+                token.defaultOrgId = user.defaultOrgId
+            }
+
             return token
         },
     },

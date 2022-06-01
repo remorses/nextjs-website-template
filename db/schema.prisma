@@ -11,7 +11,7 @@ generator jsonSchema {
 
 generator kysely {
     provider = "prisma-generator-kysely"
-    
+
 }
 
 datasource db {
@@ -83,7 +83,7 @@ model Product {
     isSandbox      Boolean
     paddleId       String         @id
     name           String
-    active         Boolean        @default(true) @map("xxxx")
+    active         Boolean        @default(true)
     image          String?
     billing_type   String
     billing_period Int

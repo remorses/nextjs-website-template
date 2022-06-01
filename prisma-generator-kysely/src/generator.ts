@@ -28,7 +28,7 @@ generatorHandler({
             (x) => x.provider === 'mysql',
         )!.url.value
         if (!DATABASE_URL) {
-            throw new Error(`Only works with mysql for now`)
+            throw new Error(`Prisma generator only works with mysql for now`)
         }
         const url = new URL(DATABASE_URL)
         url.searchParams.delete('sslaccept')
@@ -62,8 +62,8 @@ const pool = createPool({
     enableKeepAlive: true,
     connectionLimit: 30,
     waitForConnections: true,
+    // ssl: { rejectUnauthorized: true },
     ...parseUrl(process.env.DATABASE_URL),
-    ssl: { rejectUnauthorized: true },
 })
 
 export const db = new Kysely<Database>({
