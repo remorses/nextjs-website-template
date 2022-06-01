@@ -1,5 +1,4 @@
 import { MyFooter } from '@app/components/specific'
-import colors from 'tailwindcss/colors'
 import {
     Hero,
     Divider,
@@ -12,6 +11,7 @@ import {
     PageContainer,
     Section,
     FeatureLink,
+    getColor,
 } from 'beskar/landing'
 import Image from 'next/image'
 import img1 from '@app/../public/board.png'
@@ -58,7 +58,7 @@ export default function Component() {
                 cta={<FeatureLink>Try iy</FeatureLink>}
                 image={<Image className='!p-20' src={img2} />}
             />
-            <Section bg={colors.neutral['800']} className='py-8' degree={2}>
+            <Section bg={getColor('neutral.800')} className='py-8' degree={2}>
                 <Feature
                     flip
                     className='py-8'
