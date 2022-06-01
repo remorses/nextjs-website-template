@@ -65,9 +65,7 @@ export default function Component() {
             </Section>
             <div className='flex-auto'></div>
 
-            <PageContainer className=''>
-                <MyFooter />
-            </PageContainer>
+            <MyFooter />
         </div>
     )
 }
