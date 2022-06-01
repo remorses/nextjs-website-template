@@ -92,6 +92,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
             }
         }
     }, [])
+    const forcedTheme = !isDashboard ? 'light' : undefined
     return (
         <SessionProvider session={session}>
             <BeskarProvider {...{ createOrg, getUserOrgs }}>
@@ -99,6 +100,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
                     defaultTheme='light'
                     enableSystem={true}
                     attribute='class'
+                    forcedTheme={forcedTheme}
                     value={{
                         light: lightTheme.className,
                         dark: darkTheme.className,

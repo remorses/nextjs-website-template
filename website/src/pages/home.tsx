@@ -21,7 +21,7 @@ import { signIn } from 'next-auth/react'
 
 export default function Component() {
     return (
-        <div className='dark  space-y-8 bg-gray-900 text-gray-200 min-h-screen w-full flex flex-col items-stretch'>
+        <div className='dark space-y-8 bg-gray-900 text-gray-200 min-h-screen w-full flex flex-col items-stretch'>
             <NavBar
                 logo={<p className='text-3xl font-medium'>Kimaki</p>}
                 navs={[
