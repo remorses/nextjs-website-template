@@ -1,10 +1,12 @@
-export const config = { rpc: true } // enable rpc on this API route
 import { getContext } from 'next-rpc/context'
 import { getJwt } from '@app/utils/ssr'
 import { KnownError } from '@app/utils'
 import { BeskarContext } from 'beskar/landing'
 import { db, SqlOrg } from 'db'
 import cuid from 'cuid'
+import { wrapMethod } from '@app/utils/bugsnag'
+
+export const config = { rpc: true, wrapMethod } // enable rpc on this API route
 
 export async function example({}) {
     const { req, res } = getContext()

@@ -1,6 +1,7 @@
 import { env as env } from '@app/env'
 import { getToken, JWT } from 'next-auth/jwt'
-import { AppError } from '@app/utils'
+import { AppError, KnownError } from '@app/utils'
+import { WrapMethod } from 'next-rpc'
 
 export async function getJwt({ req }: { req }): Promise<JWT> {
     const jwt = await getToken({ req, secret: env.SECRET })
