@@ -17,11 +17,13 @@ generatorHandler({
         logger.info(`${GENERATOR_NAME}:Registered`)
         return {
             version,
-            defaultOutput: './generated',
+            defaultOutput: './kysely-client',
             prettyName: GENERATOR_NAME,
         }
     },
     onGenerate: async (options: GeneratorOptions) => {
+        const out = path.resolve(options.generator.output?.value as any)
+        await fs.promises.mkdir(out, { recursive: true })
         const DATABASE_URL = options.datasources.find(
             (x) => x.provider === 'mysql',
         )!.url.value
@@ -32,8 +34,8 @@ generatorHandler({
         url.searchParams.delete('sslaccept')
         // url.searchParams.set('ssl', '{"rejectUnauthorized":true}')
         const code = await inferSchema(url.toString(), prefix)
-        fs.writeFileSync(path.resolve('./generated.ts'), code)
-        fs.writeFileSync(path.resolve('./client.ts'), mainCode(options))
+        fs.writeFileSync(path.resolve(out, './generated.ts'), code)
+        fs.writeFileSync(path.resolve(out, './client.ts'), mainCode(options))
         console.log('Finished generating types')
         return
     },

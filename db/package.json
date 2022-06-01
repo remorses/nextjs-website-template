@@ -11,6 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^3.14.0",
+    "kysely": "^0.19.2",
+    "mysql2": "^2.3.3",
     "prisma": "^3.14.0",
     "prisma-json-schema-generator": "^2.0.13"
   }

@@ -58,10 +58,14 @@ importers:
   db:
     specifiers:
       '@prisma/client': ^3.14.0
+      kysely: ^0.19.2
+      mysql2: ^2.3.3
       prisma: ^3.14.0
       prisma-json-schema-generator: ^2.0.13
     dependencies:
       '@prisma/client': 3.14.0_prisma@3.14.0
+      kysely: 0.19.2
+      mysql2: 2.3.3
       prisma: 3.14.0
       prisma-json-schema-generator: 2.0.13
 
@@ -5229,6 +5233,11 @@ packages:
   /kleur/3.0.3:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
     engines: {node: '>=6'}
+
+  /kysely/0.19.2:
+    resolution: {integrity: sha512-yL8AcRWUDtSeq9+c/hN+k/F7V0mWYnW1k1eKK++YEjN1Jm35SNv/Kh2U1Rl1lgPaguvFjh00VJBH/EBF95m4Hw==}
+    engines: {node: '>=14.0.0'}
+    dev: false
 
   /language-subtag-registry/0.3.21:
     resolution: {integrity: sha512-L0IqwlIXjilBVVYKFT37X9Ih11Um5NEl9cbJIuU/SwP/zEEAbBPOnEeeuxVMf45ydWQRDQN3Nqc96OgbH1K+Pg==}
