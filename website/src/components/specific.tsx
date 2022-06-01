@@ -1,6 +1,12 @@
 import NextLink from 'next/link'
 import { Header } from 'beskar/src/Header'
-import { Footer, Link, useColorMode, useColorModeValue } from 'beskar/landing'
+import {
+    Footer,
+    Link,
+    NavBar,
+    useColorMode,
+    useColorModeValue,
+} from 'beskar/landing'
 import {
     MoonIcon,
     SunIcon,
@@ -20,8 +26,21 @@ export function MyHeader({}) {
             logo={<Logo />}
             links={[
                 <Link href='/docs'>Docs</Link>,
+                <Link href='/home'>Home</Link>,
                 <AvatarMenu />,
                 //
+            ]}
+        />
+    )
+}
+
+export function MyNavbar({}) {
+    return (
+        <NavBar
+            logo={<Logo />}
+            navs={[
+                <Link href=''>Docs</Link>,
+                <Link href=''>Changelog</Link>, //
             ]}
         />
     )
@@ -102,7 +121,7 @@ export function Logo({}) {
     const { status } = useSession()
     return (
         <NextLink href={status === 'authenticated' ? '/org' : '/'} passHref>
-            <a className='text-xl font-semibold '>Replicant</a>
+            <a className='text-2xl font-semibold '>Kimaki</a>
         </NextLink>
     )
 }
