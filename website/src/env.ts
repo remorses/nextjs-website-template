@@ -1,8 +1,8 @@
 import path from 'path'
 
 const requiredSSR = [
-    // 'NEXTAUTH_URL',
-    // 'SECRET',
+    'NEXTAUTH_URL',
+    'SECRET',
     // 'GOOGLE_ID',
     // 'GOOGLE_SECRET',
 ] as const

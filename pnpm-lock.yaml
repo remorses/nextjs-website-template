@@ -122,7 +122,9 @@ importers:
       beskar: workspace:^0.0.0
       classnames: ^2.3.1
       colord: ^2.9.2
+      cuid: ^2.1.8
       date-fns: ^2.28.0
+      db: workspace:^0.0.0
       eslint-config-next: 12.1.6
       framer-motion: ^6.3.5
       next: 12.1.6
@@ -147,7 +149,9 @@ importers:
       beskar: link:../beskar
       classnames: 2.3.1
       colord: 2.9.2
+      cuid: 2.1.8
       date-fns: 2.28.0
+      db: link:../db
       framer-motion: 6.3.5_ef5jwxihqo6n7gxfmzogljlgcm
       next: 12.1.6_ef5jwxihqo6n7gxfmzogljlgcm
       next-auth: 4.3.4_ef5jwxihqo6n7gxfmzogljlgcm
@@ -3285,6 +3289,10 @@ packages:
 
   /csstype/3.1.0:
     resolution: {integrity: sha512-uX1KG+x9h5hIJsaKR9xHUeUraxf8IODOwq9JLNPq6BwB04a/xgpq3rcx47l5BZu5zBPlgD342tdke3Hom/nJRA==}
+
+  /cuid/2.1.8:
+    resolution: {integrity: sha512-xiEMER6E7TlTPnDxrM4eRiC6TRgjNX9xzEZ5U/Se2YJKr7Mq4pJn/2XEHjl3STcSh96GmkHPcBXLES8M29wyyg==}
+    dev: false
 
   /damerau-levenshtein/1.0.8:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==}

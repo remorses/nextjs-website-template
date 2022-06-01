@@ -1,11 +1,11 @@
 import { env } from '@app/env'
-import NextAuth from 'next-auth'
+import NextAuth, { User } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
 import { Adapter } from 'next-auth/adapters'
 import { KnownError } from '@app/utils'
 
-const adapter = PrismaAdapter({} as any)
+const adapter = KyselyAdapter()
 
 export default NextAuth({
     // Configure one or more authentication providers
@@ -83,93 +83,137 @@ export default NextAuth({
     },
 })
 
-export function PrismaAdapter(prisma: PrismaClient): Partial<Adapter> {
-    return {
-        async createUser(data) {
-            const user = await prisma.user.create({ data })
-            // create default org for user
-            await prisma.orgsUsers.create({
-                data: {
-                    role: 'admin',
-                    // userId: user.id,
-                    user: {
-                        connect: {
-                            id: user.id,
-                        },
-                    },
-                    org: {
-                        create: {
-                            name: user.name || 'default',
-                        },
-                    },
-                },
+import { db, SqlUser } from 'db'
+import cuid from 'cuid'
+
+export function KyselyAdapter(): Adapter {
+    const notImplemented: any = () => {
+        throw new Error('not implemented')
+    }
+    const adapter: Adapter = {
+        // async createUser(data): Promise<any> {
+        //     console.info(`createUser`)
+        //     const row = {
+        //         ...data,
+        //         id: cuid(),
+        //     }
+        //     await db.insertInto('User').values(row).executeTakeFirst()
+        //     return row
+        // },
+        async createUser(data): Promise<any> {
+            const defaultOrgName = getDefaultOrgNameFromUser(data)
+            console.info(`createUser`)
+
+            const row = await db.transaction().execute(async (trx) => {
+                const orgId = cuid()
+                await trx
+                    .insertInto('Org')
+                    .values({ name: defaultOrgName, id: orgId })
+                    .executeTakeFirst()
+                const row: SqlUser = {
+                    ...data,
+                    id: cuid(),
+                    defaultOrgId: orgId,
+                }
+                await trx.insertInto('User').values(row).executeTakeFirst()
+
+                await trx
+                    .insertInto('OrgsUsers')
+                    .values({ orgId, userId: row.id, role: 'admin' })
+                    .executeTakeFirst()
+                return row
             })
-            return user
+            return row
         },
-        getUser(id) {
-            return prisma.user.findUnique({ where: { id } })
-        },
-        getUserByEmail(email) {
-            return prisma.user.findUnique({ where: { email } })
-        },
-        async getUserByAccount(provider_providerAccountId) {
-            const account = await prisma.account.findUnique({
-                where: { provider_providerAccountId },
-                select: { user: true },
-            })
-            return account?.user ?? null
-        },
-        updateUser(data) {
-            return prisma.user.update({ where: { id: data.id }, data })
-        },
-        deleteUser(id) {
-            return prisma.user.delete({ where: { id } })
-        },
-        async linkAccount(data) {
-            // console.log('account', pretty(data))
-            const res = (await prisma.account.create({ data })) as any // TODO fix next-auth linkAccount return type on next auth
+        getUser: async (id): Promise<any> => {
+            console.info(`getUser`)
+            const res = await db
+                .selectFrom('User')
+                .where('id', '=', id)
+                .selectAll()
+                .executeTakeFirst()
             return res
         },
-        unlinkAccount(provider_providerAccountId) {
-            return prisma.account.delete({
-                where: { provider_providerAccountId },
-            }) as any
+        getUserByEmail: async (email): Promise<any> => {
+            const res = await db
+                .selectFrom('User')
+                .where('email', '=', email)
+                .selectAll()
+                .executeTakeFirst()
+            console.info(`getUserByEmail`, res)
+            return res
         },
-        // async getSessionAndUser(sessionToken) {
-        //     const userAndSession = await prisma.session.findUnique({
-        //         where: { sessionToken },
-        //         include: { user: true },
-        //     })
-        //     if (!userAndSession) return null
-        //     const { user, ...session } = userAndSession
-        //     return { user, session }
-        // },
-        // createSession: (data) => prisma.session.create({ data }),
-        // updateSession: (data) =>
-        //     prisma.session.update({
-        //         data,
-        //         where: { sessionToken: data.sessionToken },
-        //     }),
-        // deleteSession: (sessionToken) =>
-        //     prisma.session.delete({ where: { sessionToken } }),
-        createVerificationToken(data) {
-            return prisma.verificationToken.create({ data })
-        },
-        async useVerificationToken(identifier_token) {
-            try {
-                return await prisma.verificationToken.delete({
-                    where: { identifier_token },
-                })
-            } catch (error) {
-                // If token already used/deleted, just return null
-                // https://www.prisma.io/docs/reference/api-reference/error-reference#p2025
-                if (
-                    (error as Prisma.PrismaClientKnownRequestError).code ===
-                    'P2025'
+
+        async getUserByAccount(provider_providerAccountId): Promise<any> {
+            const user = await db
+                .selectFrom('Account')
+                .where(
+                    'Account.providerAccountId',
+                    '=',
+                    provider_providerAccountId.providerAccountId,
                 )
-                    return null
-                throw error
-            }
+                .where(
+                    'Account.provider',
+                    '=',
+                    provider_providerAccountId.provider,
+                )
+                .innerJoin('User', 'User.id', 'Account.userId')
+                .selectAll('User')
+                .executeTakeFirst()
+            console.info(`getUserByAccount`, user)
+            return user
         },
+        async updateUser(data): Promise<any> {
+            console.info(`updateUser`)
+            const user = await db
+                .updateTable('User')
+                .where('id', '=', data.id)
+                .set(data)
+                .executeTakeFirst()
+
+            return await adapter.getUser(data.id)
+        },
+        async deleteUser(id): Promise<any> {
+            console.info(`deleteUser`)
+            const user = await db
+                .deleteFrom('User')
+
+                .where('id', '=', id)
+                .executeTakeFirst()
+
+            return
+        },
+
+        async linkAccount(account) {
+            console.info(`linkAccount`)
+            const res = await db
+                .insertInto('Account')
+                .values({ ...account, id: cuid() })
+                .executeTakeFirst()
+            return account
+        },
+        async unlinkAccount(provider_providerAccountId) {
+            console.info(`unlinkAccount`)
+            const res = await db
+                .deleteFrom('Account')
+                .where('provider', '=', provider_providerAccountId.provider)
+                .where(
+                    'providerAccountId',
+                    '=',
+                    provider_providerAccountId.providerAccountId,
+                )
+                .executeTakeFirst()
+            return
+        },
+        getSessionAndUser: notImplemented,
+        createSession: notImplemented,
+        updateSession: notImplemented,
+        deleteSession: notImplemented,
+        createVerificationToken: notImplemented,
+        useVerificationToken: notImplemented,
     }
+    return adapter
+}
+function getDefaultOrgNameFromUser(user: Partial<User>) {
+    return user.name
 }
