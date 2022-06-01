@@ -26,6 +26,7 @@ export function MyHeader({}) {
         />
     )
 }
+
 export function MyFooter({}) {
     return (
         <Footer

@@ -1,9 +1,7 @@
 import { PlaywrightTestConfig } from '@playwright/test'
-import { setupEnv } from '@dotenvy/dotenvplus'
-setupEnv({ directory: __dirname })
 
 export const testData = {
-    ROOT_URL: 'http://localhost:3000',
+    ROOT_URL: 'http://localhost:7050',
     NAME: 'MY NAME',
 
     EMAIL: 'myemail@gmail.com',
