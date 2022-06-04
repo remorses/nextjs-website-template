@@ -9,13 +9,9 @@ export interface AppNextApiRequest extends NextApiRequest {
 }
 
 declare module 'next-auth' {
-    /**
-     * Returned by `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
-     */
     interface Session {
         jwt: JWT
         user: {
-            /** The user's postal address. */
             id: string
         } & DefaultSession['user']
         expires: ISODateString
@@ -23,9 +19,7 @@ declare module 'next-auth' {
 }
 
 declare module 'next-auth/jwt' {
-    /** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
     interface JWT extends DefaultJWT {
-        /** OpenID ID Token */
         userId: string
         isNewUser?: boolean
     }
