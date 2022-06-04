@@ -2,5 +2,5 @@
 @tailwind components;
 @tailwind utilities;
 
-@import './focus.css';
+@import 'beskar/styles/focus.css';
 @import './globals.css';
