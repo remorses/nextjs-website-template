@@ -3,3 +3,5 @@ packages:
   - beskar
   - db
   - prisma-generator-kysely
+  - package
+  - sentiment

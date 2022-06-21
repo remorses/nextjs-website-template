@@ -11,6 +11,10 @@
     "author": "remorses <beats.by.morse@gmail.com>",
     "license": "ISC",
     "dependencies": {
-        "typescript": "^4.7.2"
+        "dotenv": "^16.0.1",
+        "esbuild": "^0.14.47",
+        "typescript": "^4.7.2",
+        "vite": "^2.9.12",
+        "vitest": "^0.15.2"
     }
 }

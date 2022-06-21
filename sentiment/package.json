@@ -1,0 +1,23 @@
+{
+    "name": "sentiment",
+    "version": "0.0.0",
+    "description": "",
+    "main": "dist/index.js",
+    "module": "esm/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc && tsc -m es6 --outDir esm",
+        "watch": "tsc -w"
+    },
+    "files": [
+        "dist",
+        "src",
+        "esm"
+    ],
+    "keywords": [],
+    "author": "Tommaso De Rossi, morse <beats.by.morse@gmail.com>",
+    "license": "ISC",
+    "dependencies": {
+        "openai": "^3.0.0"
+    }
+}
