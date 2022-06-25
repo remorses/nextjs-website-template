@@ -2,6 +2,7 @@ const enforceSingleVersion = [
     'react-hot-toast', //
     'react',
     'react-dom',
+    'react-auth',
     '@nextui-org/react',
 ]
 
@@ -25,12 +26,52 @@ function afterAllResolved(lockfile, context) {
         const count = found[p]
         if (count > 1) {
             msg += `${p} found ${count} times\n`
+            msg += explainProblemInDuplicateDep(p, lockfile)
         }
     }
     if (msg) {
         throw new Error(msg)
     }
     return lockfile
+}
+
+function explainProblemInDuplicateDep(package, lockfile) {
+    const packagesKeys = Object.keys(lockfile.packages)
+    let found = {}
+    for (let p of packagesKeys) {
+        if (p.startsWith(`/${package}/`)) {
+            const config = lockfile.packages[p]
+            found[p] = Object.keys(config.dependencies || {})
+        }
+    }
+
+    const differences = getDifferences(Object.values(found))
+
+    return `${package} has different set of dependencies:\n${JSON.stringify(
+        differences,
+        null,
+        2,
+    )}`
+}
+
+// return different items from a list of arrays of strings
+function getDifferences(arrays) {
+    const result = {}
+    for (let a of arrays) {
+        for (let x of a) {
+            if (result[x]) {
+                result[x] += 1
+            } else {
+                result[x] = 1
+            }
+        }
+    }
+    for (let x in result) {
+        if (result[x] === arrays.length) {
+            delete result[x]
+        }
+    }
+    return Object.keys(result)
 }
 
 module.exports = {

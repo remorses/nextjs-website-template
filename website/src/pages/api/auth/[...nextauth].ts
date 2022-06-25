@@ -1,5 +1,5 @@
 import { env } from '@app/env'
-import NextAuth, { User } from 'next-auth'
+import NextAuth, { NextAuthOptions, User } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
 import { Adapter } from 'next-auth/adapters'
@@ -7,7 +7,7 @@ import { KnownError } from '@app/utils'
 
 const adapter = KyselyAdapter()
 
-export default NextAuth({
+export const nextAuthOptions: NextAuthOptions = {
     // Configure one or more authentication providers
     providers: [
         process.env.NODE_ENV !== 'production' &&
@@ -85,7 +85,7 @@ export default NextAuth({
             return token
         },
     },
-})
+}
 
 import { db, SqlUser } from 'db'
 import cuid from 'cuid'
@@ -130,12 +130,12 @@ export function KyselyAdapter(): Adapter {
             return row
         },
         getUser: async (id): Promise<any> => {
-            console.info(`getUser`)
             const res = await db
                 .selectFrom('User')
                 .where('id', '=', id)
                 .selectAll()
                 .executeTakeFirst()
+            console.info(`getUser`, res)
             return res
         },
         getUserByEmail: async (email): Promise<any> => {
@@ -221,3 +221,5 @@ export function KyselyAdapter(): Adapter {
 function getDefaultOrgNameFromUser(user: Partial<User>) {
     return user.name
 }
+
+export default NextAuth(nextAuthOptions)
