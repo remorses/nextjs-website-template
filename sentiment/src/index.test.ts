@@ -21,9 +21,9 @@ test(
             model: 'text-similarity-babbage-001',
         })
         const labelsInputs = [
-            'complaining about gitbook',
             'praising gitbook',
             'something else',
+            'complaining about gitbook',
         ]
         const labels = await openai.createEmbedding({
             input: labelsInputs,
@@ -37,6 +37,7 @@ test(
                 .map((x, i) => {
                     return cosinesim(label, x)
                 })
+            console.log(sims)
             const max = indexOfMax(sims)
             console.log(`${index} -> ${labelsInputs[max]}`)
         }
