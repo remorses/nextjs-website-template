@@ -3,7 +3,7 @@ const colors = require('tailwindcss/colors')
 /** @type {import('tailwindcss/tailwind-config').TailwindConfig} */
 module.exports = {
     mode: 'jit',
-    purge: [
+    content: [
         './src/**/*.{js,ts,jsx,tsx}', //
         '../beskar/src/**/*.{js,ts,jsx,tsx}', //
     ],

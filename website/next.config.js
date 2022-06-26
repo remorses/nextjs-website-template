@@ -1,5 +1,8 @@
 const path = require('path')
-// const transpile = require('next-transpile-modules')(['prisma-client'])
+const transpile = require('next-transpile-modules')([
+    // 'beskar', //
+    // 'db',
+])
 
 // const withImages = require('next-images')
 // const { withSuperjson } = require('next-superjson')
@@ -11,15 +14,20 @@ const withRpc = require('next-rpc')({
     experimentalContext: true,
 })
 
-const piped = pipe(withRpc)
+const piped = pipe(withRpc, transpile)
 
 /** @type {import('next').NextConfig} */
-module.exports = piped({
+const config = {
     reactStrictMode: true,
     productionBrowserSourceMaps: true,
+
     experimental: {
         externalDir: true,
+
+        // runtime: 'edge',
+        // serverComponents: true,
     },
+
     swcMinify: true,
     images: {},
     // next images extensions
@@ -28,7 +36,9 @@ module.exports = piped({
         config.externals = config.externals.concat([])
         return config
     },
-})
+}
+
+module.exports = piped(config)
 
 function pipe(...fns) {
     return (x) => fns.reduce((v, f) => f(v), x)
