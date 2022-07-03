@@ -2,6 +2,6 @@ packages:
   - website
   - beskar
   - db
-  - prisma-generator-kysely
+  - prisma-generator-kysely-mysql
   - package
   - sentiment

@@ -1,11 +1,11 @@
 {
-  "name": "prisma-generator-kysely",
+  "name": "prisma-generator-kysely-mysql",
   "description": "Provide a description about your generator",
   "version": "0.0.0",
   "main": "dist/generator.js",
   "license": "MIT",
   "bin": {
-    "prisma-generator-kysely": "dist/bin.js"
+    "prisma-generator-kysely-mysql": "dist/bin.js"
   },
   "engines": {
     "node": ">=14.0"
