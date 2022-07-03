@@ -22,13 +22,16 @@ generatorHandler({
         }
     },
     onGenerate: async (options: GeneratorOptions) => {
+        // console.log(options.generator.config)
         const out = path.resolve(options.generator.output?.value as any)
         await fs.promises.mkdir(out, { recursive: true })
         const DATABASE_URL = options.datasources.find(
             (x) => x.provider === 'mysql',
         )!.url.value
         if (!DATABASE_URL) {
-            throw new Error(`Prisma generator only works with mysql for now`)
+            throw new Error(
+                `${GENERATOR_NAME} generator only works with mysql for now`,
+            )
         }
         const url = new URL(DATABASE_URL)
         url.searchParams.delete('sslaccept')
