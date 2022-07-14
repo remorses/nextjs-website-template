@@ -2,7 +2,8 @@ const enforceSingleVersion = [
     'react-hot-toast', //
     'react',
     'react-dom',
-    'react-auth',
+    'next-auth',
+    'next',
     '@nextui-org/react',
 ]
 

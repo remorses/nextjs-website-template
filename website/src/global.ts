@@ -26,7 +26,7 @@ declare module 'next-auth/jwt' {
 }
 
 declare global {
-    const Paddle: any
+    var Paddle: any
     interface Window {
         loginForTests: ({ name, email }) => Promise<any>
     }
