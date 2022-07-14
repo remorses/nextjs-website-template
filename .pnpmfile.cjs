@@ -4,6 +4,7 @@ const enforceSingleVersion = [
     'react-dom',
     'next-auth',
     'next',
+    '@prisma/client',
     '@nextui-org/react',
 ]
 

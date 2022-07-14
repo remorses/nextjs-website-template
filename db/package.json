@@ -1,19 +1,19 @@
 {
-  "name": "db",
-  "version": "0.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "remorses <beats.by.morse@gmail.com>",
-  "license": "ISC",
-  "dependencies": {
-    "@prisma/client": "^3.14.0",
-    "kysely": "^0.19.2",
-    "mysql2": "^2.3.3",
-    "prisma": "^3.14.0",
-    "prisma-json-schema-generator": "^2.0.13"
-  }
+    "name": "db",
+    "version": "0.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "postinstall": "prisma generate"
+    },
+    "keywords": [],
+    "author": "remorses <beats.by.morse@gmail.com>",
+    "license": "ISC",
+    "dependencies": {
+        "@prisma/client": "^4.0.0",
+        "kysely": "^0.19.2",
+        "mysql2": "^2.3.3",
+        "prisma": "^4.0.0",
+        "prisma-json-schema-generator": "^2.0.13"
+    }
 }

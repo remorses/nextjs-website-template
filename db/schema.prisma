@@ -11,7 +11,7 @@ generator jsonSchema {
 
 generator kysely {
     provider = "prisma-generator-kysely-mysql"
-    output   = "xxx"
+    output   = "kysely-client"
 }
 
 datasource db {
@@ -21,36 +21,38 @@ datasource db {
 }
 
 model Account {
-    id                 String   @id @default(cuid())
+    id                 String  @id @default(cuid())
     userId             String
     type               String
     provider           String
     providerAccountId  String
-    refresh_token      String?
-    access_token       String?
+    refresh_token      String? @db.Text
+    access_token       String? @db.Text
     expires_at         Int?
     token_type         String?
-    scope              String?
-    id_token           String?  @db.Text
+    scope              String? @db.Text
+    id_token           String? @db.Text
     session_state      String?
-    oauth_token_secret String?
-    oauth_token        String?  @db.Text
-    createdAt          DateTime @default(now())
-    user               User     @relation(fields: [userId], references: [id])
+    oauth_token_secret String? @db.Text
+    oauth_token        String? @db.Text
 
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     @@unique([provider, providerAccountId])
     @@index([userId])
 }
 
 model User {
     id            String      @id @default(cuid())
-    name          String?
+    name          String?     @db.Text
     email         String?     @unique
     emailVerified DateTime?
-    image         String?
+    image         String?     @db.Text
     accounts      Account[]
     orgs          OrgsUsers[]
     defaultOrgId  String?
+    signupReason  String?
 }
 
 model VerificationToken {
@@ -85,7 +87,7 @@ model Product {
     name           String
     active         Boolean        @default(true)
     image          String?
-    billing_type   String
+    billing_type   String // month | year | lifetime
     billing_period Int
     trial_days     Int
     createdAt      DateTime       @default(now())

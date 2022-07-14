@@ -24,6 +24,7 @@ export function MyHeader({}) {
     return (
         <Header
             logo={<Logo />}
+            hasOrg
             links={[
                 <Link href='/docs'>Docs</Link>,
                 <Link href='/home'>Home</Link>,

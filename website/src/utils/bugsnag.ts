@@ -2,7 +2,7 @@
 // import BugsnagPluginReact from '@bugsnag/plugin-react'
 import { WrapMethod } from 'next-rpc'
 import React from 'react'
-import { AppError, KnownError } from '.'
+import { AppError, KnownError } from './errors'
 
 // https://github.com/nodejs/node/issues/42154
 function onUncaughtException(error, origin) {

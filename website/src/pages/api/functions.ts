@@ -1,8 +1,8 @@
 import { getContext } from 'next-rpc/context'
 import { getJwt } from '@app/utils/ssr'
-import { KnownError } from '@app/utils'
+import { KnownError } from '@app/utils/errors'
 import { BeskarContext } from 'beskar/landing'
-import { db, SqlOrg } from 'db'
+import { db, SqlOrg } from 'db/kysely'
 import cuid from 'cuid'
 import { wrapMethod } from '@app/utils/bugsnag'
 

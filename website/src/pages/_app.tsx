@@ -7,7 +7,7 @@ import { createTheme, NextUIProvider } from '@nextui-org/react'
 
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
-import { AppError } from '@app/utils'
+import { AppError } from '@app/utils/errors'
 import toast, { Toaster } from 'react-hot-toast'
 import { BeskarProvider } from 'beskar/src/BeskarProvider'
 import { MyFooter, MyHeader } from '@app/components/specific'
@@ -67,6 +67,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
         if (isDashboard) {
             return ({ Tabs, children, ...rest }) => (
                 <DashboardLayout
+                    
                     header={<MyHeader />}
                     footer={<MyFooter />}
                     Tabs={Tabs}

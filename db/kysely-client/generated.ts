@@ -28,6 +28,7 @@ export interface SqlAccount {
   oauth_token?: string | null
   /**  Defaults to: CURRENT_TIMESTAMP(3). */
   createdAt: Date
+  updatedAt: Date
 }
 
 /**
@@ -54,6 +55,7 @@ export interface SqlAccountWithDefaults {
   oauth_token?: string | null
   /**  Defaults to: CURRENT_TIMESTAMP(3). */
   createdAt?: Date
+  updatedAt: Date
 }
 /**
  * Exposes all fields present in Campaign as a typescript
@@ -165,14 +167,14 @@ export interface SqlProduct {
   isSandbox: number
   paddleId: string
   name: string
+  /**  Defaults to: 1. */
+  active: number
   image?: string | null
   billing_type: string
   billing_period: number
   trial_days: number
   /**  Defaults to: CURRENT_TIMESTAMP(3). */
   createdAt: Date
-  /**  Defaults to: 1. */
-  xxxx: number
 }
 
 /**
@@ -186,14 +188,14 @@ export interface SqlProductWithDefaults {
   isSandbox: number
   paddleId: string
   name: string
+  /**  Defaults to: 1. */
+  active?: number
   image?: string | null
   billing_type: string
   billing_period: number
   trial_days: number
   /**  Defaults to: CURRENT_TIMESTAMP(3). */
   createdAt?: Date
-  /**  Defaults to: 1. */
-  xxxx?: number
 }
 /**
  * Exposes all fields present in ScrapedTweet as a typescript
@@ -298,6 +300,7 @@ export interface SqlUser {
   emailVerified?: Date | null
   image?: string | null
   defaultOrgId?: string | null
+  signupReason?: string | null
 }
 
 /**
@@ -314,6 +317,7 @@ export interface SqlUserWithDefaults {
   emailVerified?: Date | null
   image?: string | null
   defaultOrgId?: string | null
+  signupReason?: string | null
 }
 /**
  * Exposes all fields present in VerificationToken as a typescript

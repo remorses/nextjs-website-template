@@ -78,6 +78,10 @@
           "type": "string",
           "format": "date-time"
         },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
         "user": {
           "$ref": "some-schema-id#/definitions/User"
         }
@@ -127,6 +131,12 @@
           }
         },
         "defaultOrgId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "signupReason": {
           "type": [
             "string",
             "null"
