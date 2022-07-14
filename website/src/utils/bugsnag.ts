@@ -4,11 +4,24 @@ import { WrapMethod } from 'next-rpc'
 import React from 'react'
 import { AppError, KnownError } from '.'
 
+// https://github.com/nodejs/node/issues/42154
+function onUncaughtException(error, origin) {
+    if (error?.['code'] === 'ECONNRESET') {
+        console.log(`handled uncaughtException ${error}`)
+        return
+    }
+    console.error('UNCAUGHT EXCEPTION')
+    console.error(error)
+    console.error(origin)
+    process.exit(1)
+}
+
 // Bugsnag.start({
 //     apiKey: '18ece2828f1d70ee8ae6038e59bf9541',
 //     plugins: [new BugsnagPluginReact(React as any) as any],
 //     enabledReleaseStages: ['production'],
 //     releaseStage: process.env.VERCEL_ENV || process.env.NODE_ENV,
+//     onUncaughtException
 // })
 
 export function notifyError(error, msg?: string) {
