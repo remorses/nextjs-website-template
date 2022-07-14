@@ -49,11 +49,13 @@ function explainProblemInDuplicateDep(package, lockfile) {
 
     const differences = getDifferences(Object.values(found))
 
-    return `${package} has different set of dependencies:\n${JSON.stringify(
-        differences,
-        null,
-        2,
-    )}`
+    if (differences.length) {
+        return `${package} has different set of dependencies:\n${JSON.stringify(
+            differences,
+            null,
+            2,
+        )}`
+    }
 }
 
 // return different items from a list of arrays of strings
