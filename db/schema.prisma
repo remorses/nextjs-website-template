@@ -12,7 +12,6 @@ generator jsonSchema {
 generator kysely {
     provider = "prisma-generator-kysely-mysql"
     output   = "xxx"
-
 }
 
 datasource db {

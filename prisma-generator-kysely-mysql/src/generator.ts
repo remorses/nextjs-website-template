@@ -25,12 +25,18 @@ generatorHandler({
         // console.log(options.generator.config)
         const out = path.resolve(options.generator.output?.value as any)
         await fs.promises.mkdir(out, { recursive: true })
-        const DATABASE_URL = options.datasources.find(
-            (x) => x.provider === 'mysql',
-        )!.url.value
+        const p = options.datasources.find((x) => x.provider === 'mysql')
+        if (!p) {
+            throw new Error(
+                `${GENERATOR_NAME} generator only works with mysql for now (found ${options.datasources
+                    .map((x) => x.provider)
+                    .join(', ')})`,
+            )
+        }
+        const DATABASE_URL = p?.url.value
         if (!DATABASE_URL) {
             throw new Error(
-                `${GENERATOR_NAME} generator only works with mysql for now`,
+                `${GENERATOR_NAME} has not found a DATABASE_URL in the datasources, run prisma generate passing DATABASE_URL in env`,
             )
         }
         const url = new URL(DATABASE_URL)
@@ -43,7 +49,7 @@ generatorHandler({
             path.resolve(out, './client.ts'),
             mainCode(obj.map((x) => x.name)),
         )
-        console.log('Finished generating types')
+        // console.log('Finished generating types')
         return
     },
 })
