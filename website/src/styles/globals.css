@@ -7,9 +7,9 @@
 html > body {
     margin-right: 0 !important;
 }
-html {
+/* html {
     padding-right: 0 !important;
-}
+} */
 
 * {
     box-sizing: border-box;
@@ -30,7 +30,7 @@ html {
     /* height: 100vh; */
     position: relative;
     overflow-x: hidden !important;
-    overflow-y: scroll !important;
+    overflow-y: scroll;
     scroll-behavior: smooth;
     color: theme('colors.gray.700');
     touch-action: pan-x pan-y pinch-zoom !important;
