@@ -1,30 +1,23 @@
 import path from 'path'
 
-const requiredSSR = [
-    'NEXTAUTH_URL',
-    'SECRET',
-    'GOOGLE_ID',
-    'GOOGLE_SECRET',
-] as const
-
-const required = [] as const
-
-type keys = typeof requiredSSR[number] | typeof required[number]
-export const env: { [p in keys]: string } = {
-    ...process.env,
-} as any
+export const env = {
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+    SECRET: process.env.SECRET,
+    GOOGLE_ID: process.env.GOOGLE_ID,
+    GOOGLE_SECRET: process.env.GOOGLE_SECRET,
+}
 
 if (typeof window === 'undefined') {
-    for (const k of requiredSSR) {
+    for (const k in env) {
         if (!env[k]) {
             throw new Error(`Missing required ssr env var '${k}'`)
         }
     }
 }
 
-for (const k of required) {
-    if (!env[k]) {
-        throw new Error(`Missing required env var '${k}'`)
+for (const k in env) {
+    if (k.startsWith('NEXT_PUBLIC') && !env[k]) {
+        throw new Error(`Missing required client env var '${k}'`)
     }
 }
 

@@ -1,8 +1,9 @@
 import { NextFetchEvent, NextRequest, NextResponse } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 import { decode } from 'next-auth/jwt'
+import { env } from './env'
 
-const secret = process.env.SECRET
+const secret = env.SECRET
 if (!secret) {
     throw new Error('SECRET is required')
 }
@@ -16,7 +17,7 @@ export default async function middleware(req: NextRequest, ev: NextFetchEvent) {
                 // cookieName: nextAuthOptions?.cookies?.sessionToken?.name,
                 secret,
             })
-            
+
             if (jwt && jwt.defaultOrgId) {
                 return NextResponse.redirect(
                     new URL(
