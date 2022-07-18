@@ -34,6 +34,7 @@ generatorHandler({
             )
         }
         // console.log(p?.url)
+        const envName = p?.url?.fromEnvVar || 'DATABASE_URL'
         const DATABASE_URL = p?.url?.fromEnvVar
             ? process.env[p?.url?.fromEnvVar]
             : p?.url.value
@@ -56,14 +57,18 @@ generatorHandler({
         fs.writeFileSync(path.resolve(out, './generated.ts'), code)
         fs.writeFileSync(
             path.resolve(out, './client.ts'),
-            mainCode(obj.map((x) => x.name)),
+            mainCode(
+                obj.map((x) => x.name),
+                envName,
+                query,
+            ),
         )
         // console.log('Finished generating types')
         return
     },
 })
 
-const mainCode = (tables: string[]) => `
+const mainCode = (tables: string[], envName: string, query: string) => `
 import { Kysely, MysqlDialect } from 'kysely'
 import { createPool } from 'mysql2'
 
@@ -75,12 +80,25 @@ export interface DatabaseTables {
    ${tables.map((x) => x + ': ' + 'types.' + prefix + x).join(',\n    ')}
 }
 
+if (!process.env.${envName}) {
+    throw new Error('Kysely has not found a ${envName} in the env')
+}
+let uri = new URL(process.env.${envName}!)
+let query = ${JSON.stringify(query)}
+if (query) {
+    let q = new URLSearchParams(query)
+    for (let k of q.keys()) {
+        uri.searchParams.set(k, q.get(k)!)
+    }
+}
+
+
 const pool = createPool({
     enableKeepAlive: true,
     connectionLimit: 30,
     waitForConnections: true,
     // ssl: { rejectUnauthorized: true },
-    uri: process.env.DATABASE_URL,
+    uri: uri.toString(),
 })
 
 export const db = new Kysely<DatabaseTables>({
