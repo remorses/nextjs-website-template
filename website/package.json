@@ -6,7 +6,7 @@
         "test": "doppler run -- vitest",
         "build": "doppler run -- next build",
         "start": "doppler run -- next start",
-        "e2e": "doppler run -- HEADED=1 playwright test --config=./e2e/playwright.config.ts e2e",
+        "e2e": "doppler run -- playwright test --config=./e2e/playwright.config.ts e2e",
         "lint": "eslint src --fix --color"
     },
     "dependencies": {
