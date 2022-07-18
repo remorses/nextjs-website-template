@@ -4,14 +4,18 @@ importers:
 
   .:
     specifiers:
+      '@playwright/test': ^1.23.4
       dotenv: ^16.0.1
       esbuild: ^0.14.49
+      playwright: ^1.23.4
       typescript: ^4.7.4
       vite: ^2.9.12
       vitest: ^0.15.2
     dependencies:
+      '@playwright/test': 1.23.4
       dotenv: 16.0.1
       esbuild: 0.14.49
+      playwright: 1.23.4
       typescript: 4.7.4
       vite: 2.9.12
       vitest: 0.15.2
@@ -1412,6 +1416,15 @@ packages:
 
   /@panva/hkdf/1.0.2:
     resolution: {integrity: sha512-MSAs9t3Go7GUkMhpKC44T58DJ5KGk2vBo+h1cqQeqlMfdGkxaVB78ZWpv9gYi/g2fa4sopag9gJsNvS8XGgWJA==}
+
+  /@playwright/test/1.23.4:
+    resolution: {integrity: sha512-iIsoMJDS/lyuhw82FtcV/B3PXikgVD3hNe5hyvOpRM0uRr1OIpN3LgPeRbBjhzBWmyf6RgRg5fqK5sVcpA03yA==}
+    engines: {node: '>=14'}
+    hasBin: true
+    dependencies:
+      '@types/node': 17.0.36
+      playwright-core: 1.23.4
+    dev: false
 
   /@prisma/client/4.0.0_prisma@4.0.0:
     resolution: {integrity: sha512-g1h2OGoRo7anBVQ9Cw3gsbjwPtvf7i0pkGxKeZICtwkvE5CZXW+xZF4FZdmrViYkKaAShbISL0teNpu9ecpf4g==}
@@ -7089,6 +7102,21 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       find-up: 4.1.0
+
+  /playwright-core/1.23.4:
+    resolution: {integrity: sha512-h5V2yw7d8xIwotjyNrkLF13nV9RiiZLHdXeHo+nVJIYGVlZ8U2qV0pMxNJKNTvfQVT0N8/A4CW6/4EW2cOcTiA==}
+    engines: {node: '>=14'}
+    hasBin: true
+    dev: false
+
+  /playwright/1.23.4:
+    resolution: {integrity: sha512-NUPOLMpd8WydmwZFllST/YZ7cImgDDDrvcaq7Gj2vAjNg0jYCndFJt6HHtbkOPSIlRo4BaQYlbFx6meq1r1FXQ==}
+    engines: {node: '>=14'}
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      playwright-core: 1.23.4
+    dev: false
 
   /popmotion/11.0.3:
     resolution: {integrity: sha512-Y55FLdj3UxkR7Vl3s7Qr4e9m0onSnP8W7d/xQLsoJM40vs6UKHFdygs6SWryasTZYqugMjm3BepCF4CWXDiHgA==}
