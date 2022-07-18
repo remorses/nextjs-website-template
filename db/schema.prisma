@@ -12,11 +12,12 @@ generator jsonSchema {
 generator kysely {
     provider = "prisma-generator-kysely-mysql"
     output   = "kysely-client"
+    query    = "ssl={\"rejectUnauthorized\":true}"
 }
 
 datasource db {
     provider             = "mysql"
-    url                  = "mysql://root:prisma@localhost:3306/db"
+    url                  = env("DATABASE_URL")
     referentialIntegrity = "prisma"
 }
 

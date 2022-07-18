@@ -7,16 +7,7 @@ import * as types from './generated'
 export * from './generated'
 
 export interface DatabaseTables {
-   Account: types.SqlAccount,
-    Campaign: types.SqlCampaign,
-    Org: types.SqlOrg,
-    OrgsUsers: types.SqlOrgsUsers,
-    Price: types.SqlPrice,
-    Product: types.SqlProduct,
-    ScrapedTweet: types.SqlScrapedTweet,
-    Subscription: types.SqlSubscription,
-    User: types.SqlUser,
-    VerificationToken: types.SqlVerificationToken
+   
 }
 
 const pool = createPool({

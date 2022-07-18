@@ -33,7 +33,10 @@ generatorHandler({
                     .join(', ')})`,
             )
         }
-        const DATABASE_URL = p?.url.value
+        // console.log(p?.url)
+        const DATABASE_URL = p?.url?.fromEnvVar
+            ? process.env[p?.url?.fromEnvVar]
+            : p?.url.value
         if (!DATABASE_URL) {
             throw new Error(
                 `${GENERATOR_NAME} has not found a DATABASE_URL in the datasources, run prisma generate passing DATABASE_URL in env`,
@@ -41,7 +44,13 @@ generatorHandler({
         }
         const url = new URL(DATABASE_URL)
         url.searchParams.delete('sslaccept')
-        // url.searchParams.set('ssl', '{"rejectUnauthorized":true}')
+        const query = options.generator.config.query
+        if (query) {
+            let q = new URLSearchParams(query)
+            for (let k of q.keys()) {
+                url.searchParams.set(k, q.get(k)!)
+            }
+        }
         const code = await inferSchema(url.toString(), prefix)
         const obj = await inferSchemaObject(url.toString())
         fs.writeFileSync(path.resolve(out, './generated.ts'), code)

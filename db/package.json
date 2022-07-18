@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "postinstall": "prisma generate"
+        "generate": "doppler run -- prisma generate"
     },
     "keywords": [],
     "author": "remorses <beats.by.morse@gmail.com>",
