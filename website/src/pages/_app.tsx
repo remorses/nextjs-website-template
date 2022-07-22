@@ -10,52 +10,11 @@ import { useRouter } from 'next/router'
 import { AppError } from '@app/utils/errors'
 import toast, { Toaster } from 'react-hot-toast'
 import { BeskarProvider } from 'beskar/src/BeskarProvider'
+import { NextUiStuff } from 'beskar/src/nextui'
 import { MyFooter, MyHeader } from '@app/components/specific'
 import colors from 'tailwindcss/colors'
 import React from 'react'
 import { createOrg, getUserOrgs } from './api/functions'
-
-colors.gray = colors.neutral
-
-const formattedColors = Object.fromEntries(
-    Object.keys(colors)
-        .flatMap((colorName) => {
-            const colorObj = colors[colorName]
-            if (typeof colorObj === 'string') {
-                return [[colorName, colorObj]]
-            }
-            return Object.keys(colorObj).map((colorNumber) => {
-                if (!colorName) {
-                    return null
-                }
-                return [`${colorName}-${colorNumber}`, colorObj[colorNumber]]
-            })
-        })
-        .filter(Boolean),
-)
-
-// console.log(formattedColors)
-const lightTheme = createTheme({
-    type: 'light',
-    className: 'light',
-    theme: {
-        colors: {
-            ...formattedColors,
-            backgroundContrast: '#fff',
-        },
-    },
-})
-
-const darkTheme = createTheme({
-    type: 'dark',
-    className: 'dark',
-    theme: {
-        colors: {
-            ...formattedColors,
-            backgroundContrast: colors.neutral['800'],
-        },
-    },
-})
 
 const DashboardLayout = React.lazy(() => import('beskar/src/DashboardLayout'))
 
@@ -67,7 +26,6 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
         if (isDashboard) {
             return ({ Tabs, children, ...rest }) => (
                 <DashboardLayout
-                    
                     header={<MyHeader />}
                     footer={<MyFooter />}
                     Tabs={Tabs}
@@ -102,20 +60,16 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
                     enableSystem={true}
                     attribute='class'
                     forcedTheme={forcedTheme}
-                    value={{
-                        light: lightTheme.className,
-                        dark: darkTheme.className,
-                    }}
                 >
                     <Toaster
                         containerStyle={{ zIndex: 10000 }}
                         position='top-center'
                     />
-                    <NextUIProvider disableBaseline>
+                    <NextUiStuff>
                         <Wrapper Tabs={Component.Tabs}>
                             <Component {...pageProps} />
                         </Wrapper>
-                    </NextUIProvider>
+                    </NextUiStuff>
                 </ThemeProvider>
             </BeskarProvider>
         </SessionProvider>

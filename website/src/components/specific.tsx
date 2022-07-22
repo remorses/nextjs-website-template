@@ -1,5 +1,5 @@
 import NextLink from 'next/link'
-import { Header } from 'beskar/src/Header'
+import { DashboardHeader } from 'beskar/src/Header'
 import {
     Footer,
     Link,
@@ -15,14 +15,15 @@ import {
     CreditCardIcon,
 } from '@heroicons/react/outline'
 import { Avatar } from '@nextui-org/react'
-import { DropDownMenu } from 'beskar/src/DropDown'
+
 import { signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { AvatarButton } from 'beskar/src/Header'
+import { DropDownMenu } from 'beskar/src/DropDown'
 
 export function MyHeader({}) {
     return (
-        <Header
+        <DashboardHeader
             logo={<Logo />}
             hasOrg
             links={[
