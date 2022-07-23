@@ -5,7 +5,11 @@ import { Link, useThrowingFn } from 'beskar/landing'
 import { env } from '@app/env'
 
 import { fetchWithTimeout } from '@app/utils'
-import { getSiteLimits, redirectionOnNoSite, requiresAuth } from '@app/utils/ssr'
+import {
+    getSiteLimits,
+    redirectionOnNoSite,
+    requiresAuth,
+} from '@app/utils/ssr'
 import {
     Button,
     IconButton,
@@ -146,6 +150,7 @@ function DomainDeleteButton({ site, domain }) {
             try {
                 await deleteCustomDomain({
                     domainId: domain.id,
+                    siteId: site.id,
                 })
             } catch (e) {
                 toast.error
@@ -245,13 +250,7 @@ function DNSModal({}) {
                         <div className=''></div>
                         <TableBlock
                             head={['RECORD TYPE', 'NAME/HOST', 'VALUE/IP']}
-                            rows={[
-                                [
-                                    'A',
-                                    host ? `${subdomain}` : '@',
-                                    IP,
-                                ],
-                            ]}
+                            rows={[['A', host ? `${subdomain}` : '@', IP]]}
                         />
                     </div>
                 </ModalBody>

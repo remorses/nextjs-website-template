@@ -162,8 +162,10 @@ function transformToValidDomain(name: string) {
 
 export const deleteCustomDomain = async function deleteCustomDomain({
     domainId,
+    siteId,
 }: {
     domainId: string
+    siteId: string
 }) {
     if (!domainId) {
         throw new KnownError(`domainId is required`)
@@ -174,7 +176,7 @@ export const deleteCustomDomain = async function deleteCustomDomain({
     const domain = await prisma.domain.findFirst({
         where: {
             id: domainId,
-            site: { users: { some: { userId } } },
+            site: { id: siteId, users: { some: { userId } } },
             domainType: 'customDomain',
         },
     })
@@ -194,6 +196,14 @@ export const deleteCustomDomain = async function deleteCustomDomain({
             site: { users: { some: { userId } } },
             domainType: 'customDomain',
         }, // user cannot delete default domain
+    })
+
+    // mark site to be refetched by proxy
+    await prisma.site.update({
+        where: { id: siteId },
+        data: {
+            updatedAt: new Date(),
+        },
     })
 
     if (result.count === 0) {
@@ -263,6 +273,13 @@ export async function createDomain({ siteId, host }) {
             domainType: 'customDomain',
         },
     })
+    // mark site to be refetched by proxy
+    await prisma.site.update({
+        where: { id: siteId },
+        data: {
+            updatedAt: new Date(),
+        },
+    })
 }
 
 export async function updateDomain({ siteId, domainId, host }) {
@@ -298,6 +315,13 @@ export async function updateDomain({ siteId, domainId, host }) {
         data: {
             host,
             domainType: internal ? 'internalDomain' : 'customDomain',
+        },
+    })
+    // mark site to be refetched by proxy
+    await prisma.site.update({
+        where: { id: siteId },
+        data: {
+            updatedAt: new Date(),
         },
     })
 }
@@ -343,7 +367,14 @@ export async function createNewRoute({
     if (route) {
         throw new KnownError(`Route ${basePath} already exists`)
     }
-    return await prisma.route.create({
+    // mark site to be refetched by proxy
+    await prisma.site.update({
+        where: { id: siteId },
+        data: {
+            updatedAt: new Date(),
+        },
+    })
+    await prisma.route.create({
         data: {
             basePath,
             targetUrl,
@@ -385,8 +416,14 @@ export async function deleteRoute({ routeId, siteId }) {
     if (route.basePath === '/') {
         throw new KnownError(`Cannot delete / route`)
     }
-
-    return await prisma.route.delete({
+    // mark site to be refetched by proxy
+    await prisma.site.update({
+        where: { id: siteId },
+        data: {
+            updatedAt: new Date(),
+        },
+    })
+    await prisma.route.delete({
         where: {
             id: routeId,
         },

@@ -42,3 +42,16 @@ export async function fetchWithTimeout(
     clearTimeout(id)
     return response
 }
+
+export function partition<T>(arr: T[], key: (x: T) => boolean) {
+    const a = [] as T[]
+    const b = [] as T[]
+    for (const x of arr) {
+        if (key(x)) {
+            a.push(x)
+        } else {
+            b.push(x)
+        }
+    }
+    return [a, b]
+}
