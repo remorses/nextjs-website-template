@@ -301,3 +301,94 @@ export async function updateDomain({ siteId, domainId, host }) {
         },
     })
 }
+
+export async function createNewRoute({
+    basePath,
+    siteId,
+    targetUrl,
+}: Partial<Route>) {
+    const { req, res } = getContext()
+    const { userId } = await getJwt({ req })
+    if (!basePath) {
+        throw new KnownError(`basePath is required`)
+    }
+    if (!siteId) {
+        throw new KnownError(`siteId is required`)
+    }
+    if (!targetUrl) {
+        throw new KnownError(`targetUrl is required`)
+    }
+    if (!/^[a-zA-Z0-9/]+$/i.test(basePath)) {
+        throw new KnownError(
+            `Path can have only letters and numbers: ${basePath}`,
+        )
+    }
+    const site = await prisma.site.findFirst({
+        where: {
+            id: siteId,
+            users: {
+                some: { userId },
+            },
+        },
+    })
+    if (!site) {
+        throw new KnownError(`Site not found`)
+    }
+    const route = await prisma.route.findFirst({
+        where: {
+            basePath,
+            siteId,
+        },
+    })
+    if (route) {
+        throw new KnownError(`Route ${basePath} already exists`)
+    }
+    return await prisma.route.create({
+        data: {
+            basePath,
+            targetUrl,
+            siteId,
+        },
+    })
+}
+
+export async function deleteRoute({ routeId, siteId }) {
+    const { req, res } = getContext()
+    const { userId } = await getJwt({ req })
+
+    if (!siteId) {
+        throw new KnownError(`siteId is required`)
+    }
+    if (!routeId) {
+        throw new KnownError(`routeId is required`)
+    }
+
+    const route = await prisma.route.findFirst({
+        where: {
+            id: routeId,
+            site: {
+                users: {
+                    some: { userId },
+                },
+                routes: {
+                    some: {
+                        id: routeId,
+                    },
+                },
+            },
+        },
+    })
+
+    if (!route) {
+        throw new KnownError(`Route not found`)
+    }
+    if (route.basePath === '/') {
+        throw new KnownError(`Cannot delete / route`)
+    }
+
+    return await prisma.route.delete({
+        where: {
+            id: routeId,
+        },
+    })
+}

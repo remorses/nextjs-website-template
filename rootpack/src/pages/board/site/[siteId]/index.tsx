@@ -12,12 +12,25 @@ import {
 import { TabLink } from 'beskar/src/Tabs'
 import { Alert, Block, SaveButton, TableBlock } from 'beskar/dashboard'
 import { useRouter } from 'next/router'
-import { redirectionOnNoSite as redirectionOnNoSite, requiresAuth } from '@app/utils/ssr'
+import {
+    redirectionOnNoSite as redirectionOnNoSite,
+    requiresAuth,
+} from '@app/utils/ssr'
 import { prisma, Route } from 'db'
 import { InferGetServerSidePropsType } from 'next/types'
 import { Fragment, useState } from 'react'
-import { Button, Link, useDisclosure } from 'beskar/landing'
+import {
+    Button,
+    InlineCode,
+    Link,
+    useDisclosure,
+    useThrowingFn,
+} from 'beskar/landing'
 import { RouteModal } from '@app/components/RouteModal'
+import classNames from 'classnames'
+import { deleteRoute } from '@app/pages/api/functions'
+import { Button as ChakraButton } from '@chakra-ui/react'
+import { refreshSsr } from '@app/utils'
 
 function Page({
     site,
@@ -46,59 +59,89 @@ function Page({
                 </div>
             </Block>
             <div className=''>Routes</div>
-            <RoutesBlock routes={site.routes || []} />
+            <RoutesBlock
+                bestHost={site.domains[0].host}
+                routes={site.routes || []}
+            />
         </>
     )
 }
 
-function RoutesBlock({ routes }: { routes: Route[] }) {
+function RoutesBlock({
+    routes,
+    bestHost,
+}: {
+    routes: Route[]
+    bestHost: string
+}) {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [initialRoute, setInitialRoute] = useState<Partial<Route>>()
+    let wClass = `gap-3 [&>*]:!w-[33%]`
+    let href = `https://${bestHost}`
+    const router = useRouter()
+    const siteId = router.query.siteId as string
+    // routes =
     return (
         <>
-            <TableBlock
-                head={['Path', 'Url', '']}
-                rows={routes.map((route) => {
+            <Block className=''>
+                <div className={classNames('flex ', wClass)}>
+                    <div className=''>PATH</div>
+                    <div className=''>URL</div>
+                    <div className=''></div>
+                </div>
+                {routes.map((route) => {
                     return (
-                        <Fragment key={route.id}>
-                            <TableBlock.TData className='font-medium'>
-                                {route.basePath}
-                            </TableBlock.TData>
-                            <TableBlock.TData className='font-medium'>
+                        <div
+                            key={route.id}
+                            className={classNames(
+                                // ' rounded-lg hover:bg-gray-100 hover:dark:bg-gray-700 px-5 py-3',
+                                'flex items-center',
+                                wClass,
+                            )}
+                        >
+                            <a
+                                href={new URL(route.basePath, href).toString()}
+                                target='_blank'
+                                className='font-medium '
+                            >
+                                <InlineCode className='!py-1 font-bold'>
+                                    {route.basePath}
+                                </InlineCode>
+                            </a>
+                            <a
+                                href={route.targetUrl}
+                                target='_blank'
+                                className='font-medium underline'
+                            >
                                 {route.targetUrl}
-                            </TableBlock.TData>
-                            <TableBlock.TData className=''>
-                                <Button
-                                    onClick={() => {
-                                        setInitialRoute(route)
-                                        onOpen()
-                                    }}
-                                    className='underline text-sm'
-                                    ghost
-                                >
-                                    Edit
-                                </Button>
-                            </TableBlock.TData>
-                        </Fragment>
+                            </a>
+                            <div className='flex justify-center'>
+                                {/* <div className='grow'></div> */}
+                                <RouteDeleteButton route={route} />
+                            </div>
+                        </div>
                     )
                 })}
-                footer={
-                    <div className='flex'>
-                        <div className='grow'></div>
-                        <Button
-                            bg='blue.500'
-                            bgDark='blue.300'
-                            className='text-sm'
-                            children='Add Route'
-                            onClick={() => {
-                                setInitialRoute({ basePath: '', targetUrl: '' })
-                                onOpen()
-                            }}
-                        />
-                    </div>
-                }
-                className=''
-            ></TableBlock>
+                <div className='mt-4'></div>
+                <div className='flex'>
+                    {/* <div className='grow'></div> */}
+                    <ChakraButton
+                        // bg='blue.500'
+                        // bgDark='blue.300'
+                        // className='text-sm'
+
+                        children='Add Route'
+                        size={'sm'}
+                        onClick={() => {
+                            setInitialRoute({
+                                basePath: '',
+                                targetUrl: '',
+                            })
+                            onOpen()
+                        }}
+                    />
+                </div>
+            </Block>
             <RouteModal {...{ isOpen, onOpen, onClose, initialRoute }} />
         </>
     )
@@ -189,3 +232,30 @@ export const getServerSideProps = requiresAuth(
         }
     },
 )
+
+function RouteDeleteButton({ route }) {
+    const router = useRouter()
+    const siteId = router.query.siteId as string
+    const { fn: deleteRouteClient, isLoading } = useThrowingFn({
+        fn: async () => {
+            await deleteRoute({
+                routeId: route.id,
+                siteId,
+            })
+            await refreshSsr()
+        },
+    })
+    return (
+        <ChakraButton
+            onClick={deleteRouteClient}
+            variant='ghost'
+            isLoading={isLoading}
+            size='sm'
+            colorScheme='red'
+            // biggerOnHover
+            // ghost
+        >
+            Delete
+        </ChakraButton>
+    )
+}

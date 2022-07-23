@@ -6,10 +6,12 @@ import {
     Input,
 } from 'beskar/landing'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSWRConfig } from 'swr'
 import {} from '@chakra-ui/react'
+import { refreshSsr, validateUrl } from '@app/utils'
+import { createNewRoute } from '@app/pages/api/functions'
 
 export function RouteModal({ initialRoute, isOpen, onClose }) {
     const router = useRouter()
@@ -37,20 +39,24 @@ export function RouteModal({ initialRoute, isOpen, onClose }) {
     }, [initialRoute, reset])
     const { mutate } = useSWRConfig()
     const isUpdate = !!initialRoute?.targetUrl
+    const siteId = router.query.siteId as string
     const { fn: onSubmit, isLoading } = useThrowingFn({
-        fn: async function onSubmit({ name }) {
+        fn: async function onSubmit(data) {
             // throw new Error('not implemented')
-
+            const { basePath, targetUrl } = data
+            await createNewRoute({ basePath, targetUrl, siteId })
+            await refreshSsr()
             onClose()
         },
         successMessage: 'Success',
     })
-
+    const initialFocusRef = useRef()
     return (
         <Modal
             className='flex flex-col w-full space-y-8 !max-w-xl'
             isOpen={isOpen}
             useDefaultContentStyle
+            initialFocus={initialFocusRef}
             onClose={onClose}
             content={
                 <form
@@ -64,19 +70,34 @@ export function RouteModal({ initialRoute, isOpen, onClose }) {
                     </div>
 
                     <Input
+                        ref={initialFocusRef}
                         label='Base Path'
+                        description='The base path of the route'
                         // underlined
                         placeholder='/path'
                         // helperColor='error'
                         errorMessage={String(errors?.basePath?.message || '')}
-                        {...register('basePath', { required: true })}
+                        {...register('basePath', {
+                            required: true,
+                            validate: (p: string) => {
+                                if (!p.startsWith('/')) {
+                                    return 'Must start with /'
+                                }
+                                if (p.split('/').length > 2) {
+                                    return 'Must not have more than one /'
+                                }
+                            },
+                        })}
                     />
                     <Input
                         label='Target Url'
-                        // underlined
+                        description='The traffic will go to the following url'
                         placeholder='https://example.com'
                         // helperColor='error'
-                        {...register('targetUrl', { required: true })}
+                        {...register('targetUrl', {
+                            required: true,
+                            validate: validateUrl,
+                        })}
                         errorMessage={String(errors?.targetUrl?.message || '')}
                     />
                     <div className='flex'>
