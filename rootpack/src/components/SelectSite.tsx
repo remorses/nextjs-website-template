@@ -27,12 +27,12 @@ export function SelectSite({ className = '' }) {
 
     const { fn: onChange, isLoading: isOrgLoading } = useThrowingFn({
         fn: async function onChange(value) {
-            const site = sites?.find((org) => org.id === value)
+            const site = sites?.find((site) => String(site.id) === value)
             if (!site) {
                 console.warn('no site found', value)
                 return
             }
-            const newPath = `/site/${site.id}`
+            const newPath = `/board/site/${site.id}`
             await router.replace(newPath)
         },
     })
@@ -56,7 +56,7 @@ export function SelectSite({ className = '' }) {
                 onChange={onChange}
                 className={classNames('min-w-[16ch]', className)}
                 endButton={
-                    <Select.SelectButton children='New Org' onClick={onClick} />
+                    <Select.SelectButton children='New Site' onClick={onClick} />
                 }
                 options={sites.map((o) => {
                     return {

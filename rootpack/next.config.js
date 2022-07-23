@@ -5,7 +5,7 @@ const transpile = require('next-transpile-modules')([
 ])
 
 // const withImages = require('next-images')
-// const { withSuperjson } = require('next-superjson')
+const { withSuperjson } = require('next-superjson')
 // const withBundleAnalyzer = require('@next/bundle-analyzer')({
 //     enabled: Boolean(process.env.ANALYZE),
 // })
@@ -14,7 +14,7 @@ const withRpc = require('next-rpc')({
     experimentalContext: true,
 })
 
-const piped = pipe(withRpc, transpile)
+const piped = pipe(withRpc, transpile, withSuperjson())
 
 /** @type {import('next').NextConfig} */
 const config = {

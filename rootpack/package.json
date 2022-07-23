@@ -1,5 +1,5 @@
 {
-    "name": "website",
+    "name": "rootpack-website",
     "private": true,
     "scripts": {
         "dev": "NEXTAUTH_URL=http://localhost:7050 doppler run -- next dev --port 7050",
@@ -34,6 +34,7 @@
         "react-dom": "18.2.0",
         "react-hook-form": "^7.31.3",
         "react-hot-toast": "^2.2.0",
+        "superjson": "^1.9.1",
         "swr": "^1.3.0",
         "tailwindcss": "^3.1.6"
     },
@@ -42,6 +43,7 @@
         "@types/react": "18.0.9",
         "autoprefixer": "^10.4.7",
         "eslint-config-next": "12.1.6",
+        "next-superjson": "^0.0.4",
         "next-transpile-modules": "^9.0.0",
         "postcss": "^8.4.14"
     }

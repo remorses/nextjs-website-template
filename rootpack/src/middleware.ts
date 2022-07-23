@@ -12,7 +12,7 @@ export default async function middleware(req: NextRequest, ev: NextFetchEvent) {
     try {
         let pathname = req.nextUrl.pathname
 
-        if (pathname.startsWith('/site/')) {
+        if (pathname.startsWith('/board/')) {
             const jwt = await getToken({
                 req: req,
                 // cookieName: nextAuthOptions?.cookies?.sessionToken?.name,
@@ -31,7 +31,7 @@ export default async function middleware(req: NextRequest, ev: NextFetchEvent) {
             const defaultSiteId = jwt?.defaultSiteId
             if (defaultSiteId) {
                 return NextResponse.redirect(
-                    new URL(`/site/${defaultSiteId}`, req.nextUrl.origin),
+                    new URL(`/board/site/${defaultSiteId}`, req.nextUrl.origin),
                 )
             }
             if (jwt && !defaultSiteId) {

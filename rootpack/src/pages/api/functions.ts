@@ -45,9 +45,9 @@ export const createSite = async ({
     if (!name) {
         throw new KnownError(`Name is required`)
     }
-    if (!/^[a-zA-Z0-9]+$/i.test(name)) {
-        throw new KnownError(`Name can have only letters and numbers: ${name}`)
-    }
+    // if (!/^[a-zA-Z0-9]+$/i.test(name)) {
+    //     throw new KnownError(`Name can have only letters and numbers: ${name}`)
+    // }
 
     const { req } = getContext()
     const { userId } = await getJwt({ req })

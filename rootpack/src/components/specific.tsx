@@ -96,7 +96,7 @@ function AvatarMenu({ imgSrc = '' }) {
             >
                 {!isDark ? 'Dark mode' : 'Light Mode'}
             </DropDownMenu.Item>
-            <NextLink href={`/org/settings`}>
+            <NextLink href={`/board/settings`}>
                 <DropDownMenu.Item
                     icon={<CogIcon className='w-5 h-5 opacity-60' />}
                 >
@@ -125,9 +125,9 @@ function AvatarMenu({ imgSrc = '' }) {
 }
 
 export function Logo({}) {
-    const { status } = useSession()
+    // const { status } = useSession()
     return (
-        <NextLink href={status === 'authenticated' ? '/org' : '/'} passHref>
+        <NextLink href={'/'} passHref>
             <a className='text-2xl font-semibold '>Kimaki</a>
         </NextLink>
     )

@@ -20,6 +20,7 @@ import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { AppError } from '@app/utils/errors'
+import { validateUrl } from '@app/utils'
 import { createSite } from './api/functions'
 
 export default function Page() {
@@ -88,7 +89,7 @@ export function Form({}) {
                     routes: [{ basePath: '/', targetUrl: fallback }],
                     setAsDefault: true,
                 })
-                
+
                 await router.push(`/site/${site.id}`)
             } catch (e) {
                 throw e
@@ -145,25 +146,7 @@ export function Form({}) {
                             aria-label='fallback'
                             {...register('fallback', {
                                 required: true,
-                                validate: (x: string) => {
-                                    if (
-                                        !x.startsWith('http://') &&
-                                        !x.startsWith('https://')
-                                    ) {
-                                        return 'Must be an url'
-                                    }
-                                    try {
-                                        const url = new URL(x)
-                                        if (
-                                            url.pathname &&
-                                            url.pathname !== '/'
-                                        ) {
-                                            return 'Must not have path'
-                                        }
-                                    } catch {
-                                        return 'Invalid url'
-                                    }
-                                },
+                                validate: validateUrl,
                             })}
                         />
                         <div className='text-red-500'>
