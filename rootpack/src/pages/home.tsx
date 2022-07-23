@@ -148,7 +148,10 @@ function Page({ products }) {
                                 'md:flex-row',
                             )}
                         >
-                            <GoogleLoginButton text='Sign Up With Google' />
+                            <GoogleLoginButton
+                                callbackPath='/board'
+                                text='Sign Up With Google'
+                            />
 
                             {/* <Button
                                 href='/docs'
