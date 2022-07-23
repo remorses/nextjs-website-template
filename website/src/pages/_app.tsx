@@ -14,7 +14,7 @@ import { NextUiStuff } from 'beskar/src/nextui'
 import { MyFooter, MyHeader } from '@app/components/specific'
 import colors from 'tailwindcss/colors'
 import React from 'react'
-import { createOrg, getUserOrgs } from './api/functions'
+
 
 const DashboardLayout = React.lazy(() => import('beskar/src/DashboardLayout'))
 
@@ -54,7 +54,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
     const forcedTheme = !isDashboard ? 'light' : undefined
     return (
         <SessionProvider session={session}>
-            <BeskarProvider {...{ createOrg, getUserOrgs }}>
+            <BeskarProvider>
                 <ThemeProvider
                     defaultTheme='light'
                     enableSystem={true}

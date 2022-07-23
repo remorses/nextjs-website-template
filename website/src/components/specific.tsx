@@ -20,12 +20,18 @@ import { signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { AvatarButton } from 'beskar/src/Header'
 import { DropDownMenu } from 'beskar/src/DropDown'
+import { createOrg, getUserOrgs } from '@app/pages/api/functions'
+import { SelectOrg } from 'beskar/src/SelectOrg'
 
 export function MyHeader({}) {
     return (
         <DashboardHeader
-            logo={<Logo />}
-            hasOrg
+            logo={
+                <div className='flex flex-col gap-3'>
+                    <Logo />
+                    <SelectOrg {...{ createOrg, getUserOrgs }} />
+                </div>
+            }
             links={[
                 <Link href='/docs'>Docs</Link>,
                 <Link href='/home'>Home</Link>,
