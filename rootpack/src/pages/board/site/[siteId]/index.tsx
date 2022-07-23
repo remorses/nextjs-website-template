@@ -94,8 +94,8 @@ function RoutesBlock({
                         <div
                             key={route.id}
                             className={classNames(
-                                // ' rounded-lg hover:bg-gray-100 hover:dark:bg-gray-700 px-5 py-3',
-                                'border-t pt-4',
+                                ' rounded-lg bg-gray-100 dark:bg-gray-500/10 px-5 py-3',
+                                // 'border-t pt-4',
                                 'flex items-center',
                                 wClass,
                             )}
@@ -123,7 +123,7 @@ function RoutesBlock({
                         </div>
                     )
                 })}
-                <div className='mt-2 border-t'></div>
+                {/* <div className='mt-2 border-t'></div> */}
                 <div className='flex'>
                     {/* <div className='grow'></div> */}
                     <ChakraButton
