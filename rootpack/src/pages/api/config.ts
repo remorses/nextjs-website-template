@@ -76,6 +76,7 @@ export type HostConfig = {
     Fallback: string
 }
 
+// TODO import this type from go package
 export type GoConfig = {
     Map: { [key: string]: HostConfig }
     Domains: Record<string, string>

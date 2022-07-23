@@ -8,6 +8,7 @@ import cuid from 'cuid'
 import { wrapMethod } from '@app/utils/bugsnag'
 import { prisma, Route } from 'db'
 import { env } from '@app/env'
+import { validSubscriptionFilter } from 'db/data'
 
 export const config = { rpc: true, wrapMethod } // enable rpc on this API route
 
@@ -428,4 +429,39 @@ export async function deleteRoute({ routeId, siteId }) {
             id: routeId,
         },
     })
+}
+
+export async function deleteUser() {
+    const { req, res } = getContext()
+    const { userId } = await getJwt({ req })
+    if (!userId) {
+        return
+    }
+
+    const sitesWithSub = await prisma.site.findMany({
+        where: {
+            users: {
+                some: { userId, role: 'ADMIN' },
+            },
+            subscriptions: {
+                some: {
+                    ...validSubscriptionFilter,
+                },
+            },
+        },
+    })
+    if (sitesWithSub.length > 0) {
+        throw new KnownError(
+            `There are sites with subscriptions active. Cancel them first.`,
+        )
+    }
+
+    await prisma.site.deleteMany({
+        where: { users: { some: { userId, role: 'ADMIN' } } },
+    })
+    await prisma.user.delete({
+        where: { id: userId },
+    })
+
+    return
 }

@@ -26,12 +26,16 @@ import { SelectSite } from './SelectSite'
 import { getSubscription } from '@app/pages/api/functions'
 
 export function MyHeader({}) {
+    const router = useRouter()
     return (
         <DashboardHeader
             logo={
                 <div className='flex flex-col gap-3'>
                     <Logo />
-                    <SelectSite />
+                    <SelectSite
+                        // there is no site in user settings, just keep loading state
+                        doNotRedirect={router.asPath === '/board/settings'}
+                    />
                 </div>
             }
             links={[

@@ -15,7 +15,7 @@ import { getUserSites } from '@app/pages/api/functions'
 import { validSubscriptionFilter } from 'db/data'
 import { toast } from 'react-hot-toast'
 
-export function SelectSite({ className = '' }) {
+export function SelectSite({ doNotRedirect=false, className = '' }) {
     const { data, error, isValidating } = useSWR('getSites', getUserSites)
     // console.log({ data })
     const sites = data?.sites || []
@@ -28,7 +28,7 @@ export function SelectSite({ className = '' }) {
     const router = useRouter()
     const siteId = (router.query.siteId || '') as string
     useEffect(() => {
-        if (sites.length && !siteId) {
+        if (!doNotRedirect && sites.length && !siteId) {
             router.push(`/board/site/${sites[0].id}`)
         }
     }, [sites, siteId])
