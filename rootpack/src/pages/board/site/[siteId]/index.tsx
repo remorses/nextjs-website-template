@@ -28,7 +28,7 @@ function Page({
 
 function RoutesBlock({ routes }: { routes: Route[] }) {
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const [initialRoute, setInitialRoute] = useState<Route>()
+    const [initialRoute, setInitialRoute] = useState<Partial<Route>>()
     return (
         <>
             <TableBlock
@@ -66,7 +66,7 @@ function RoutesBlock({ routes }: { routes: Route[] }) {
                             className='text-sm'
                             children='Add Route'
                             onClick={() => {
-                                setInitialRoute(null)
+                                setInitialRoute({ basePath: '', targetUrl: '' })
                                 onOpen()
                             }}
                         />

@@ -23,8 +23,8 @@ export function RouteModal({ initialRoute, isOpen, onClose }) {
         formState: { errors, isSubmitting },
     } = useForm({
         defaultValues: {
-            basePath: '',
-            targetUrl: '',
+            basePath: initialRoute?.basePath,
+            targetUrl: initialRoute?.targetUrl,
         },
     })
     useEffect(() => {
@@ -32,8 +32,11 @@ export function RouteModal({ initialRoute, isOpen, onClose }) {
             reset()
         }
     }, [isOpen, reset])
+    useEffect(() => {
+        reset(initialRoute)
+    }, [initialRoute, reset])
     const { mutate } = useSWRConfig()
-
+    const isUpdate = !!initialRoute?.targetUrl
     const { fn: onSubmit, isLoading } = useThrowingFn({
         fn: async function onSubmit({ name }) {
             // throw new Error('not implemented')
@@ -57,7 +60,7 @@ export function RouteModal({ initialRoute, isOpen, onClose }) {
                 >
                     <Modal.CloseButton onClick={onClose} />
                     <div className='font-semibold text-xl text-center'>
-                        {initialRoute ? 'Update route' : 'Create route'}
+                        {isUpdate ? 'Update route' : 'Create route'}
                     </div>
 
                     <Input
@@ -69,7 +72,7 @@ export function RouteModal({ initialRoute, isOpen, onClose }) {
                         {...register('basePath', { required: true })}
                     />
                     <Input
-                        label='Base Path'
+                        label='Target Url'
                         // underlined
                         placeholder='https://example.com'
                         // helperColor='error'
@@ -84,7 +87,7 @@ export function RouteModal({ initialRoute, isOpen, onClose }) {
                             type='submit'
                             as='button'
                         >
-                            {initialRoute ? 'Update' : 'Create'}
+                            {isUpdate ? 'Update' : 'Create'}
                         </Button>
                     </div>
                 </form>
