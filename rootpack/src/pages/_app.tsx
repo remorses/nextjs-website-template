@@ -1,5 +1,6 @@
 import '@app/styles/index.css'
 import 'baby-i-am-faded/styles.css'
+import NextNprogress from 'nextjs-progressbar'
 import type { AppProps } from 'next/app'
 import { SessionProvider, signIn } from 'next-auth/react'
 import { ThemeProvider } from 'next-themes'
@@ -14,7 +15,6 @@ import { NextUiStuff } from 'beskar/src/nextui'
 import { MyFooter, MyHeader } from '@app/components/specific'
 import colors from 'tailwindcss/colors'
 import React from 'react'
-
 
 const DashboardLayout = React.lazy(() => import('beskar/src/DashboardLayout'))
 
@@ -52,6 +52,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
         }
     }, [])
     const forcedTheme = !isDashboard ? 'light' : undefined
+
     return (
         <SessionProvider session={session}>
             <BeskarProvider>
@@ -64,6 +65,14 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
                     <Toaster
                         containerStyle={{ zIndex: 10000 }}
                         position='top-center'
+                    />
+                    <NextNprogress
+                        color='#29D'
+                        startPosition={0.3}
+                        stopDelayMs={200}
+                        height={4}
+                        options={{ showSpinner: false }}
+                        showOnShallow={true}
                     />
                     <NextUiStuff>
                         <Wrapper Tabs={Component.Tabs}>

@@ -162,7 +162,9 @@ importers:
       next-superjson: ^0.0.4
       next-themes: ^0.2.0
       next-transpile-modules: ^9.0.0
+      nextjs-progressbar: ^0.0.14
       nodemailer: ^6.7.7
+      nprogress: '*'
       postcss: ^8.4.14
       react: 18.2.0
       react-dom: 18.2.0
@@ -192,7 +194,9 @@ importers:
       next-auth: 4.10.0_mnimnj2pdeccz5uivmdmoly3tq
       next-rpc: 3.5.1_next@12.2.2
       next-themes: 0.2.0_7gpduzaz4csxytrukenoyuq3te
+      nextjs-progressbar: 0.0.14_next@12.2.2+react@18.2.0
       nodemailer: 6.7.7
+      nprogress: 0.2.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-hook-form: 7.33.0_react@18.2.0
@@ -8811,6 +8815,18 @@ packages:
       - '@babel/core'
       - babel-plugin-macros
 
+  /nextjs-progressbar/0.0.14_next@12.2.2+react@18.2.0:
+    resolution: {integrity: sha512-AXYXHDN6M52AwFnGqH/vlwyo0gbC9zM7QS/4ryOTI0RUqfze5FJl8uSrxKJMzK6hGFdDeQXcZoWsLGXeCVtTwg==}
+    peerDependencies:
+      next: '>= 6.0.0'
+      react: '>= 16.0.0'
+    dependencies:
+      next: 12.2.2_biqbaboplfbrettd7655fr4n2y
+      nprogress: 0.2.0
+      prop-types: 15.8.1
+      react: 18.2.0
+    dev: false
+
   /node-dir/0.1.17:
     resolution: {integrity: sha512-tmPX422rYgofd4epzrNoOXiE8XFZYOcCq1vD7MAXCDO+O+zndlA2ztdKKMa+EeuBG5tHETpr4ml4RGgpqDCCAg==}
     engines: {node: '>= 0.10.5'}
@@ -8966,7 +8982,7 @@ packages:
       - write-file-atomic
 
   /nprogress/0.2.0:
-    resolution: {integrity: sha1-y480xTIT2JVyP8urkH6UIq28r7E=}
+    resolution: {integrity: sha512-I19aIingLgR1fmhftnbWWO3dXc0hSxqHQHQb3H8m+K3TnEn/iSeTZZOyvKXWqQESMwuUVnatlCnZdLBZZt2VSA==}
     dev: false
 
   /nwsapi/2.2.0:
