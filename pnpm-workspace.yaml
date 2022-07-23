@@ -5,3 +5,4 @@ packages:
   - prisma-generator-kysely-mysql
   - package
   - sentiment
+  - rootpack
