@@ -20,8 +20,7 @@ import { signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { AvatarButton } from 'beskar/src/Header'
 import { DropDownMenu } from 'beskar/src/DropDown'
-import { createOrg, getUserOrgs } from '@app/pages/api/functions'
-import { SelectOrg } from 'beskar/src/SelectOrg'
+import { SelectSite } from './SelectSite'
 
 export function MyHeader({}) {
     return (
@@ -29,7 +28,7 @@ export function MyHeader({}) {
             logo={
                 <div className='flex flex-col gap-3'>
                     <Logo />
-                    <SelectOrg {...{ createOrg, getUserOrgs }} />
+                    <SelectSite />
                 </div>
             }
             links={[
@@ -73,7 +72,7 @@ function AvatarMenu({ imgSrc = '' }) {
     const { toggleColorMode, isDark } = useColorMode()
     const router = useRouter()
     const { data: session } = useSession()
-    const orgId = router.query.orgId
+
     let avatar = (
         <div className=''>
             <AvatarButton
@@ -97,7 +96,7 @@ function AvatarMenu({ imgSrc = '' }) {
             >
                 {!isDark ? 'Dark mode' : 'Light Mode'}
             </DropDownMenu.Item>
-            <NextLink href={`/org/${orgId}/settings`}>
+            <NextLink href={`/org/settings`}>
                 <DropDownMenu.Item
                     icon={<CogIcon className='w-5 h-5 opacity-60' />}
                 >

@@ -1,10 +1,13 @@
 import { getContext } from 'next-rpc/context'
+import isValidDomain from 'is-valid-domain'
 import { getJwt } from '@app/utils/ssr'
-import { KnownError } from '@app/utils/errors'
+import { AppError, KnownError } from '@app/utils/errors'
 import { BeskarContext } from 'beskar/landing'
-import { db, SqlOrg } from 'db/kysely'
+// import { db, SqlOrg } from 'db/kysely'
 import cuid from 'cuid'
 import { wrapMethod } from '@app/utils/bugsnag'
+import { prisma, Route } from 'db'
+import { env } from '@app/env'
 
 export const config = { rpc: true, wrapMethod } // enable rpc on this API route
 
@@ -12,27 +15,33 @@ export async function example({}) {
     const { req, res } = getContext()
 }
 
-export const getUserOrgs: BeskarContext['getUserOrgs'] = async () => {
+export const getUserSites = async () => {
     const { req } = getContext()
 
-    const { userId, defaultOrgId } = await getJwt({ req })
+    const { userId, defaultSiteId } = await getJwt({ req })
 
-    const orgs = await db
-        .selectFrom('Org')
-        .where('Org.id', 'in', (q) =>
-            q
-                .selectFrom('OrgsUsers')
-                .where('OrgsUsers.userId', '=', userId)
+    const sites = await prisma.site.findMany({
+        where: {
+            users: {
+                some: {
+                    userId,
+                },
+            },
+        },
+    })
 
-                .select('OrgsUsers.orgId'),
-        )
-        .select(['Org.name', 'Org.id'])
-        .execute()
-    // console.log({ orgs })
-    return { defaultOrgId: String(defaultOrgId || ''), orgs: orgs }
+    return { sites: sites }
 }
 
-export const createOrg: BeskarContext['createOrg'] = async ({ name = '' }) => {
+export const createSite = async ({
+    name = '',
+    routes,
+    setAsDefault = false,
+}: {
+    name: string
+    routes: Partial<Route>[]
+    setAsDefault?: boolean
+}) => {
     if (!name) {
         throw new KnownError(`Name is required`)
     }
@@ -42,11 +51,60 @@ export const createOrg: BeskarContext['createOrg'] = async ({ name = '' }) => {
 
     const { req } = getContext()
     const { userId } = await getJwt({ req })
-    const org: SqlOrg = { name, id: cuid() }
-    await db.insertInto('Org').values(org).executeTakeFirst()
-    await db
-        .insertInto('OrgsUsers')
-        .values({ orgId: org.id, userId, role: 'admin' })
-        .executeTakeFirst()
-    return org
+
+    const host = `${transformToValidDomain(name)}.${
+        env.NEXT_PUBLIC_APPS_DOMAIN
+    }`
+    if (!isValidDomain(host)) {
+        throw new AppError(
+            `Choose another name from '${name}', domain ${host} is not valid`,
+        )
+    }
+    const site = await prisma.site.create({
+        data: {
+            name,
+            users: {
+                create: {
+                    userId,
+                    role: 'ADMIN',
+                },
+            },
+            domains: {
+                create: {
+                    host,
+                    domainType: 'internalDomain',
+                },
+            },
+            routes: {
+                createMany: {
+                    data: routes.map((x) => {
+                        const { basePath, targetUrl } = x
+                        return {
+                            basePath,
+                            targetUrl,
+                        }
+                    }),
+                },
+            },
+        },
+    })
+    if (setAsDefault) {
+        await prisma.user.update({
+            where: { id: userId },
+            data: { defaultSiteId: site.id },
+        })
+    }
+    return site
+}
+
+function transformToValidDomain(name: string) {
+    name = name
+        .replace(/ /g, '')
+        .replace(/\./g, '')
+        .replace(/[^a-zA-Z0-9]/g, '')
+        .toLowerCase()
+    if (name) {
+        name += '-'
+    }
+    return name + cuid().slice(-5)
 }

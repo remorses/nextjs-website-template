@@ -21,12 +21,6 @@ export const options: NextAuthOptions = {
         GoogleProvider({
             clientId: env.GOOGLE_ID!,
             clientSecret: env.GOOGLE_SECRET!,
-            // authorization: {
-            //     params: {
-            //         scope: 'openid email profile',
-            //         prompt: 'select_account',
-            //     },
-            // },
         }),
         // EmailProvider({
         //     server: env.EMAIL_SERVER,
@@ -113,10 +107,10 @@ export const options: NextAuthOptions = {
             if (isNewUser) {
                 token.isNewUser = true
             }
-            if (typeof user?.defaultOrgId === 'string') {
-                token.defaultOrgId = user.defaultOrgId
-            }
 
+            if (typeof user?.defaultSiteId === 'string') {
+                token.defaultSiteId = user.defaultSiteId
+            }
             return token
         },
 
@@ -135,31 +129,31 @@ export default authHandler
 export function PrismaAdapter(prisma: PrismaClient): Partial<Adapter> {
     return {
         async createUser(data) {
-            const defaultOrgName = getDefaultOrgNameFromUser(data)
-            console.info(`createUser`)
-
-            const row = await db.transaction().execute(async (trx) => {
-                const orgId = cuid()
-                await trx
-                    .insertInto('Org')
-                    .values({ name: defaultOrgName, id: orgId })
-                    .executeTakeFirst()
-                const row: SqlUser = {
-                    ...data,
-                    id: cuid(),
-                    emailVerified: null,
-                    defaultOrgId: orgId,
-                }
-                await trx.insertInto('User').values(row).executeTakeFirst()
-
-                await trx
-                    .insertInto('OrgsUsers')
-                    .values({ orgId, userId: row.id, role: 'admin' })
-                    .executeTakeFirst()
-                return row
-            })
-            return row as any
             return await prisma.user.create({ data })
+            // const defaultOrgName = getDefaultOrgNameFromUser(data)
+            // console.info(`createUser`)
+
+            // const row = await db.transaction().execute(async (trx) => {
+            //     const orgId = cuid()
+            //     await trx
+            //         .insertInto('Org')
+            //         .values({ name: defaultOrgName, id: orgId })
+            //         .executeTakeFirst()
+            //     const row: SqlUser = {
+            //         ...data,
+            //         id: cuid(),
+            //         emailVerified: null,
+            //         defaultOrgId: orgId,
+            //     }
+            //     await trx.insertInto('User').values(row).executeTakeFirst()
+
+            //     await trx
+            //         .insertInto('OrgsUsers')
+            //         .values({ orgId, userId: row.id, role: 'admin' })
+            //         .executeTakeFirst()
+            //     return row
+            // })
+            // return row as any
         },
 
         getUser(id) {

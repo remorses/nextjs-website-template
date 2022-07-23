@@ -20,7 +20,7 @@ const DashboardLayout = React.lazy(() => import('beskar/src/DashboardLayout'))
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
     const router = useRouter()
-    const isDashboard = router.asPath.startsWith('/org')
+    const isDashboard = router.asPath.startsWith('/site')
     const Wrapper: any = useMemo(() => {
         // console.log(`Creating wrapper`)
         if (isDashboard) {

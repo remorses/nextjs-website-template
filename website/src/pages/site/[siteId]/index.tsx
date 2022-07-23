@@ -23,9 +23,9 @@ function Page({}) {
 
 export const Tabs = () => {
     const {
-        query: { orgId },
+        query: { siteId },
     } = useRouter()
-    const base = `/org/${orgId}`
+    const base = `/site/${siteId}`
 
     return [
         <TabLink

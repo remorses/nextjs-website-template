@@ -6,6 +6,7 @@ export const env = {
     NEXT_PUBLIC_ENV: process.env.NEXT_PUBLIC_ENV,
     GOOGLE_ID: process.env.GOOGLE_ID,
     GOOGLE_SECRET: process.env.GOOGLE_SECRET,
+    NEXT_PUBLIC_APPS_DOMAIN: process.env.NEXT_PUBLIC_APPS_DOMAIN,
 }
 
 if (typeof process !== 'undefined') {

@@ -40,20 +40,23 @@ model Account {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
     @@unique([provider, providerAccountId])
     @@index([userId])
 }
 
 model User {
-    id            String      @id @default(cuid())
-    name          String?     @db.Text
-    email         String?     @unique
+    id            String         @id @default(cuid())
+    name          String?        @db.Text
+    email         String?        @unique
     emailVerified DateTime?
-    image         String?     @db.Text
+    image         String?        @db.Text
     accounts      Account[]
-    orgs          OrgsUsers[]
     defaultOrgId  String?
     signupReason  String?
+    defaultSiteId Int?
+    sites         SitesUsers[]
+    Subscription  Subscription[]
 }
 
 model VerificationToken {
@@ -64,80 +67,76 @@ model VerificationToken {
     @@unique([identifier, token])
 }
 
-model OrgsUsers {
-    userId String
-    user   User     @relation(fields: [userId], references: [id])
-    orgId  String
-    org    Org      @relation(fields: [orgId], references: [id])
-    role   UserRole @default(user)
-
-    @@id([userId, orgId])
-}
-
-model Org {
-    id            String         @id @default(cuid())
-    name          String         @unique
-    users         OrgsUsers[]
-    subscriptions Subscription[]
-    Campaign      Campaign[]
-}
+// XXX paddle
 
 model Product {
-    isSandbox      Boolean
-    paddleId       String         @id
-    name           String
-    active         Boolean        @default(true)
-    image          String?
+    isSandbox Boolean
+    paddleId  String  @id // this paddleis can also be my id, i didn't forecast i would need products outside of Paddle
+    name      String
+    active    Boolean @default(true)
+    image     String?
+
+    // platform       ProductPlatform?
     billing_type   String // month | year | lifetime
-    billing_period Int
-    trial_days     Int
-    createdAt      DateTime       @default(now())
-    subscriptions  Subscription[]
-    prices         Price[]
+    billing_period Int // 1
+
+    trial_days Int
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    subscriptions Subscription[]
+    prices        Price[]
+
+    // lifetimeCodes LifetimeCode[]
 }
 
 model Price {
     isSandbox  Boolean
     paddleId   String
-    product    Product  @relation(fields: [paddleId], references: [paddleId])
-    currency   String
+    product    Product  @relation(fields: [paddleId], references: [paddleId], onDelete: Cascade)
+    currency   String // USD
     unitAmount Int
     createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
 
     @@unique([paddleId, currency, unitAmount])
 }
 
 model Subscription {
-    paddleUserId                String
-    isSandbox                   Boolean
-    id                          String             @id @default(cuid())
-    product                     Product            @relation(fields: [productId], references: [paddleId])
-    productId                   String
-    paddleSubscriptionId        String             @unique
-    status                      SubscriptionStatus
-    cancel_url                  String?
-    update_url                  String?
-    paddleEmail                 String?
-    marketing_consent           Boolean?
-    paused_at                   DateTime?
-    paused_reason               String?
-    paused_from                 DateTime?
-    start_date                  DateTime?
-    unit_price                  String?
+    product              Product            @relation(fields: [productId], references: [paddleId])
+    user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+    paddleUserId         String
+    isSandbox            Boolean
+    id                   String             @id @default(cuid())
+    userId               String
+    productId            String
+    paddleSubscriptionId String             @unique
+    status               SubscriptionStatus
+    cancel_url           String?
+    update_url           String?
+    paddleEmail          String?
+
+    marketing_consent Boolean?
+
+    paused_at     DateTime?
+    paused_reason String?
+    paused_from   DateTime?
+
+    start_date DateTime?
+
+    unit_price String?
+
     currency                    String?
     canceled_at                 DateTime?
     cancellation_effective_date DateTime?
-    createdAt                   DateTime           @default(now())
-    org                         Org                @relation(fields: [orgId], references: [id])
-    orgId                       String
 
-    @@index([orgId])
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([userId])
     @@index([productId])
-}
-
-enum UserRole {
-    admin
-    user
 }
 
 enum SubscriptionStatus {
@@ -150,39 +149,64 @@ enum SubscriptionStatus {
 
 // custom rows
 
-model Campaign {
-    id   String  @id @default(cuid())
-    name String? @db.Text
+model SitesUsers {
+    userId String
+    siteId Int
+    role   UserRole
 
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+    @@id([userId, siteId])
+}
+
+enum UserRole {
+    ADMIN
+    GUEST
+}
+
+model SiteInviteLink {
     createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    twitterQueries Json           @default("[]")
-    scrapedTweets  ScrapedTweet[]
-
-
-    org   Org    @relation(fields: [orgId], references: [id])
-    orgId String
+    key       String   @id
+    siteId    Int
+    site      Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
 }
 
-model ScrapedTweet {
-    id         String          @id @default(cuid())
-    tweetId    String
-    campaign   Campaign        @relation(fields: [campaignId], references: [id])
-    campaignId String
-    createdAt  DateTime        @default(now())
-    state      ScrapedState    @default(waiting)
-    platform   ScrapedPlatform @default(twitter)
+model Site {
+    id   Int     @id @default(autoincrement())
+    name String?
+
+    users SitesUsers[]
+
+    domains Domain[]
+
+    createdAt       DateTime         @default(now())
+    updatedAt       DateTime         @default(now()) @updatedAt
+    routes          Route[]
+    invitationLinks SiteInviteLink[]
 }
 
-enum ScrapedPlatform {
-    twitter
-    reddit
-    hackernews
+model Domain {
+    id         Int        @id @default(autoincrement())
+    host       String     @unique
+    siteId     Int
+    domainType DomainType
+    site       Site       @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+    @@index([siteId])
 }
 
-enum ScrapedState {
-    waiting
-    skipped
-    replied
+enum DomainType {
+    customDomain
+    internalDomain
+}
+
+model Route {
+    id        Int    @id @default(autoincrement()) // use Int to preserve memory if a site has many routes
+    siteId    Int
+    basePath  String // if basePath is / then it is a fallback route
+    targetUrl String @db.Text
+    site      Site   @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+    @@index([siteId])
 }

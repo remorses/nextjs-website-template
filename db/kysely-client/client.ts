@@ -8,12 +8,13 @@ export * from './generated'
 
 export interface DatabaseTables {
    Account: types.SqlAccount,
-    Campaign: types.SqlCampaign,
-    Org: types.SqlOrg,
-    OrgsUsers: types.SqlOrgsUsers,
+    Domain: types.SqlDomain,
     Price: types.SqlPrice,
     Product: types.SqlProduct,
-    ScrapedTweet: types.SqlScrapedTweet,
+    Route: types.SqlRoute,
+    Site: types.SqlSite,
+    SiteInviteLink: types.SqlSiteInviteLink,
+    SitesUsers: types.SqlSitesUsers,
     Subscription: types.SqlSubscription,
     User: types.SqlUser,
     VerificationToken: types.SqlVerificationToken

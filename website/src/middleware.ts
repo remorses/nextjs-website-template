@@ -10,20 +10,33 @@ if (!secret) {
 
 export default async function middleware(req: NextRequest, ev: NextFetchEvent) {
     try {
-        if (['/', '/org'].includes(req.nextUrl.pathname)) {
+        let pathname = req.nextUrl.pathname
+
+        if (pathname.startsWith('/site/')) {
             const jwt = await getToken({
                 req: req,
-
                 // cookieName: nextAuthOptions?.cookies?.sessionToken?.name,
                 secret,
             })
-
-            if (jwt && jwt.defaultOrgId) {
+            if (!jwt) {
+                return NextResponse.redirect(new URL(`/`, req.nextUrl.origin))
+            }
+        }
+        if (pathname === '/') {
+            const jwt = await getToken({
+                req: req,
+                // cookieName: nextAuthOptions?.cookies?.sessionToken?.name,
+                secret,
+            })
+            const defaultSiteId = jwt?.defaultSiteId
+            if (defaultSiteId) {
                 return NextResponse.redirect(
-                    new URL(
-                        `/org/${jwt.defaultOrgId}`,
-                        req.nextUrl.origin,
-                    ).toString(),
+                    new URL(`/site/${defaultSiteId}`, req.nextUrl.origin),
+                )
+            }
+            if (jwt && !defaultSiteId) {
+                return NextResponse.redirect(
+                    new URL(`/new`, req.nextUrl.origin),
                 )
             }
         }
