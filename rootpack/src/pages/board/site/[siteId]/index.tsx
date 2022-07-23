@@ -33,6 +33,7 @@ import { Button as ChakraButton } from '@chakra-ui/react'
 import { refreshSsr } from '@app/utils'
 import { atom, useAtom } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
+import { atomUpgradeModal } from '@app/utils/atoms'
 
 function Page({
     site,
@@ -176,11 +177,11 @@ function RoutesBlock({
 }
 
 export const Tabs = () => {
-    const {
-        query: { siteId },
-    } = useRouter()
+    const router = useRouter()
+    const siteId = router.query.siteId as string
     const base = `/board/site/${siteId}`
     const iconClass = 'w-[20px] h-[20px]'
+    const updateUpgradeModal = useUpdateAtom(atomUpgradeModal)
     return (
         <>
             <TabLink
@@ -219,7 +220,14 @@ export const Tabs = () => {
             <TabLink
                 key='upgrade'
                 aria-label='upgrade'
-                href='/board/upgrade'
+                onClick={(e) => {
+                    updateUpgradeModal({
+                        isOpen: true,
+                        reason: 'Upgrade',
+                        siteId,
+                    })
+                    e.preventDefault()
+                }}
                 icon={<CreditCardIcon className={iconClass} />}
                 isUpgradeButton
             >
