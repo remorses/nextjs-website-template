@@ -197,18 +197,21 @@ function Page({ products }) {
                             heading: 'Customizable',
                             description: 'Inject code, add elements and more',
                             Icon: ColorSwatchIcon,
+                            soon: true,
                         },
                         {
                             heading: 'Automatic sitemap',
                             description:
                                 'Auto generates a sitemap.xml for all subpaths',
                             Icon: MenuAlt2Icon,
+                            soon: true,
                         },
                         {
                             heading: 'Password protection',
                             description:
                                 'Add password to pages of your website',
                             Icon: LockClosedIcon,
+                            soon: true,
                         },
                     ]}
                 />
@@ -268,6 +271,9 @@ function Features({ style = {}, features }) {
                                     <feature.Icon className='w-6 h-6' />
                                 </div>
                                 <div className='space-y-1'>
+                                    {feature.soon && (
+                                        <div className='rounded px-1 py-[2px] tracking-wider -mt-[2.1em] mb-1 font-semibold text-white text-[10px] dark:bg-gray-800 max-w-max'>Coming Soon</div>
+                                    )}
                                     <h3 className='text-lg font-semibold md:text-xl'>
                                         {feature.heading}
                                     </h3>
