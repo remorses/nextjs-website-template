@@ -10,6 +10,7 @@ import {
 } from 'next'
 import { Session, unstable_getServerSession } from 'next-auth'
 import { notifyError } from './bugsnag'
+import { prisma } from 'db'
 
 export async function getJwt({ req }: { req }): Promise<JWT> {
     const jwt = await getToken({ req, secret: env.SECRET })
@@ -59,4 +60,23 @@ export function wrapGetSSR(fn) {
             throw e
         }
     }
+}
+import {
+    mergePlanLimits,
+    subscriptionSorter,
+    validSubscriptionFilter,
+} from 'db/data'
+
+export async function getSiteLimits(siteId: string) {
+    const subs = await prisma.subscription.findMany({
+        where: { siteId, ...validSubscriptionFilter },
+        orderBy: { updatedAt: 'desc' },
+        include: {
+            product: true,
+        },
+    })
+
+    const sub = subs.sort(subscriptionSorter)?.[0]
+
+    return { sub, limits: mergePlanLimits(subs.map((x) => x.productId)), subs }
 }

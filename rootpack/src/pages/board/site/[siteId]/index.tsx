@@ -1,4 +1,14 @@
-import { ChevronRightIcon, CogIcon, FolderIcon } from '@heroicons/react/solid'
+import {
+    AdjustmentsIcon,
+    BeakerIcon,
+    ChevronRightIcon,
+    CogIcon,
+    CreditCardIcon,
+    EmojiHappyIcon,
+    FolderIcon,
+    HomeIcon,
+    LinkIcon,
+} from '@heroicons/react/solid'
 import { TabLink } from 'beskar/src/Tabs'
 import { Alert, Block, SaveButton, TableBlock } from 'beskar/dashboard'
 import { useRouter } from 'next/router'
@@ -6,7 +16,7 @@ import { requiresAuth } from '@app/utils/ssr'
 import { prisma, Route } from 'db'
 import { InferGetServerSidePropsType } from 'next/types'
 import { Fragment, useState } from 'react'
-import { Button, useDisclosure } from 'beskar/landing'
+import { Button, Link, useDisclosure } from 'beskar/landing'
 import { RouteModal } from '@app/components/RouteModal'
 
 function Page({
@@ -14,13 +24,28 @@ function Page({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
     return (
         <>
-            <Alert
-                // type='error'
-                description='Hello'
-                title={'Hello, happy to see you'}
-                className=''
-            ></Alert>
             <div className='text-4xl font-semibold capitalize'>{site.name}</div>
+            <Block className='flex flex-col w-full px-6 py-6 space-y-6'>
+                <div className='flex flex-col space-y-3'>
+                    <div className='font-medium opacity-60 uppercase'>
+                        Domains
+                    </div>
+                    {site.domains.map((domain) => {
+                        const domainHref = domain.host
+                        return (
+                            <Link
+                                underline
+                                key={domain?.id}
+                                href={`https://${domainHref}`}
+                                className='underline'
+                            >
+                                {domainHref}
+                            </Link>
+                        )
+                    })}
+                </div>
+            </Block>
+            <div className=''>Routes</div>
             <RoutesBlock routes={site.routes || []} />
         </>
     )
@@ -84,25 +109,53 @@ export const Tabs = () => {
         query: { siteId },
     } = useRouter()
     const base = `/board/site/${siteId}`
+    const iconClass = 'w-[20px] h-[20px]'
+    return (
+        <>
+            <TabLink
+                key='overview'
+                aria-label='go to site overview'
+                href={base}
+                icon={<HomeIcon className={iconClass} />}
+            >
+                Overview
+            </TabLink>
+            <TabLink
+                key='domains'
+                aria-label='go to site domains'
+                href={base + '/domains'}
+                icon={<LinkIcon className={iconClass} />}
+            >
+                Domains
+            </TabLink>
+            {/* <TabLink
+                key='customization'
+                href={base + '/customization'}
+                aria-label='go to site customization'
+                icon={<BeakerIcon className={iconClass} />}
+            >
+                Customization
+            </TabLink> */}
 
-    return [
-        <TabLink
-            key='1'
-            aria-label=''
-            href={base}
-            icon={<FolderIcon className='w-5 h-5' />}
-        >
-            Campaigns
-        </TabLink>,
-        <TabLink
-            key='2'
-            aria-label=''
-            href={`${base}/settings`}
-            icon={<CogIcon className='w-5 h-5' />}
-        >
-            Settings
-        </TabLink>,
-    ]
+            <TabLink
+                key='settings'
+                href={base + '/options'}
+                aria-label='go to site settings'
+                icon={<AdjustmentsIcon className={iconClass} />}
+            >
+                Settings
+            </TabLink>
+            <TabLink
+                key='upgrade'
+                aria-label='upgrade'
+                href='/dashboard/upgrade'
+                icon={<CreditCardIcon className={iconClass} />}
+                isUpgradeButton
+            >
+                Upgrade
+            </TabLink>
+        </>
+    )
 }
 
 Page.Tabs = Tabs
@@ -119,9 +172,10 @@ export const getServerSideProps = requiresAuth(
         }
         const userId = session.jwt.userId
         const site = await prisma.site.findFirst({
-            where: { id: Number(siteId), users: { some: { userId } } },
+            where: { id: siteId, users: { some: { userId } } },
             include: {
                 routes: true,
+                domains: true,
             },
         })
         if (!site) {

@@ -32,6 +32,50 @@ export const getUserSites = async () => {
 
     return { sites: sites }
 }
+export const updateSite = async ({ name, siteId }) => {
+    const { req } = getContext()
+
+    const { userId } = await getJwt({ req })
+
+    const sites = await prisma.site.updateMany({
+        where: {
+            id: siteId,
+            users: {
+                some: {
+                    userId,
+                },
+            },
+        },
+        data: {
+            name,
+        },
+    })
+
+    return { sites: sites }
+}
+export const deleteSite = async ({ siteId }) => {
+    const { req } = getContext()
+
+    const { userId } = await getJwt({ req })
+
+    const admin = await prisma.sitesUsers.findFirst({
+        where: {
+            siteId,
+            userId,
+            role: 'ADMIN',
+        },
+    })
+    if (!admin) {
+        throw new KnownError(`You are not admin of this site`)
+    }
+    const site = await prisma.site.delete({
+        where: {
+            id: siteId,
+        },
+    })
+
+    return { sites: site }
+}
 
 export const createSite = async ({
     name = '',
@@ -88,7 +132,7 @@ export const createSite = async ({
             },
         },
     })
-    if (setAsDefault) {
+    if (setAsDefault && site) {
         await prisma.user.update({
             where: { id: userId },
             data: { defaultSiteId: site.id },

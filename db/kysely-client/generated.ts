@@ -59,8 +59,8 @@ export interface SqlAccountWithDefaults {
 export interface SqlDomain {
   domainType: 'customDomain' | 'internalDomain'
   host: string
-  id: number
-  siteId: number
+  id: string
+  siteId: string
 }
 
 /**
@@ -73,8 +73,8 @@ export interface SqlDomain {
 export interface SqlDomainWithDefaults {
   domainType: 'customDomain' | 'internalDomain'
   host: string
-  id?: number
-  siteId: number
+  id: string
+  siteId: string
 }
 /**
  * Exposes all fields present in Price as a typescript
@@ -152,8 +152,8 @@ export interface SqlProductWithDefaults {
  */
 export interface SqlRoute {
   basePath: string
-  id: number
-  siteId: number
+  id: string
+  siteId: string
   targetUrl: string
 }
 
@@ -166,8 +166,8 @@ export interface SqlRoute {
  */
 export interface SqlRouteWithDefaults {
   basePath: string
-  id?: number
-  siteId: number
+  id: string
+  siteId: string
   targetUrl: string
 }
 /**
@@ -177,7 +177,7 @@ export interface SqlRouteWithDefaults {
 export interface SqlSite {
   /**  Defaults to: CURRENT_TIMESTAMP(3). */
   createdAt: Date
-  id: number
+  id: string
   name?: string | null
   /**  Defaults to: CURRENT_TIMESTAMP(3). */
   updatedAt: Date
@@ -193,7 +193,7 @@ export interface SqlSite {
 export interface SqlSiteWithDefaults {
   /**  Defaults to: CURRENT_TIMESTAMP(3). */
   createdAt?: Date
-  id?: number
+  id: string
   name?: string | null
   /**  Defaults to: CURRENT_TIMESTAMP(3). */
   updatedAt?: Date
@@ -206,7 +206,7 @@ export interface SqlSiteInviteLink {
   /**  Defaults to: CURRENT_TIMESTAMP(3). */
   createdAt: Date
   key: string
-  siteId: number
+  siteId: string
 }
 
 /**
@@ -220,7 +220,7 @@ export interface SqlSiteInviteLinkWithDefaults {
   /**  Defaults to: CURRENT_TIMESTAMP(3). */
   createdAt?: Date
   key: string
-  siteId: number
+  siteId: string
 }
 /**
  * Exposes all fields present in SitesUsers as a typescript
@@ -228,7 +228,7 @@ export interface SqlSiteInviteLinkWithDefaults {
  */
 export interface SqlSitesUsers {
   role: 'ADMIN' | 'GUEST'
-  siteId: number
+  siteId: string
   userId: string
 }
 
@@ -241,7 +241,7 @@ export interface SqlSitesUsers {
  */
 export interface SqlSitesUsersWithDefaults {
   role: 'ADMIN' | 'GUEST'
-  siteId: number
+  siteId: string
   userId: string
 }
 /**
@@ -265,12 +265,12 @@ export interface SqlSubscription {
   paused_from?: Date | null
   paused_reason?: string | null
   productId: string
+  siteId: string
   start_date?: Date | null
   status: 'past_due' | 'active' | 'paused' | 'trialing' | 'deleted'
   unit_price?: string | null
   update_url?: string | null
   updatedAt: Date
-  userId: string
 }
 
 /**
@@ -297,20 +297,19 @@ export interface SqlSubscriptionWithDefaults {
   paused_from?: Date | null
   paused_reason?: string | null
   productId: string
+  siteId: string
   start_date?: Date | null
   status: 'past_due' | 'active' | 'paused' | 'trialing' | 'deleted'
   unit_price?: string | null
   update_url?: string | null
   updatedAt: Date
-  userId: string
 }
 /**
  * Exposes all fields present in User as a typescript
  * interface.
  */
 export interface SqlUser {
-  defaultOrgId?: string | null
-  defaultSiteId?: number | null
+  defaultSiteId?: string | null
   email?: string | null
   emailVerified?: Date | null
   id: string
@@ -327,8 +326,7 @@ export interface SqlUser {
  * should be able to omit these fields if you'd like
  */
 export interface SqlUserWithDefaults {
-  defaultOrgId?: string | null
-  defaultSiteId?: number | null
+  defaultSiteId?: string | null
   email?: string | null
   emailVerified?: Date | null
   id: string

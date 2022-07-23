@@ -128,7 +128,7 @@ export function Logo({}) {
     // const { status } = useSession()
     return (
         <NextLink href={'/'} passHref>
-            <a className='text-2xl font-semibold '>Kimaki</a>
+            <a className='text-2xl font-semibold '>RootPack</a>
         </NextLink>
     )
 }

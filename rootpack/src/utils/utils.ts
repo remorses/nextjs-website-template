@@ -1,4 +1,5 @@
 import { useTheme } from 'next-themes'
+import router from 'next/router'
 import { useState, useEffect } from 'react'
 import toast from 'react-hot-toast'
 
@@ -16,4 +17,14 @@ export function validateUrl(x: string) {
     } catch {
         return 'Invalid url'
     }
+}
+
+export function refreshSsr() {
+    return router.replace(router.asPath, router.asPath, { scroll: false })
+}
+
+export function nDaysAgo(n: number) {
+    const d = new Date()
+    d.setDate(d.getDate() - n)
+    return d
 }

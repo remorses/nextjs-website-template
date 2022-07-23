@@ -46,17 +46,16 @@ model Account {
 }
 
 model User {
-    id            String         @id @default(cuid())
-    name          String?        @db.Text
-    email         String?        @unique
+    id            String    @id @default(cuid())
+    name          String?   @db.Text
+    email         String?   @unique
     emailVerified DateTime?
-    image         String?        @db.Text
+    image         String?   @db.Text
     accounts      Account[]
-    defaultOrgId  String?
+
     signupReason  String?
-    defaultSiteId Int?
+    defaultSiteId String?
     sites         SitesUsers[]
-    Subscription  Subscription[]
 }
 
 model VerificationToken {
@@ -105,11 +104,11 @@ model Price {
 
 model Subscription {
     product              Product            @relation(fields: [productId], references: [paddleId])
-    user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+    site                 Site               @relation(fields: [siteId], references: [id], onDelete: Cascade)
     paddleUserId         String
     isSandbox            Boolean
     id                   String             @id @default(cuid())
-    userId               String
+    siteId               String
     productId            String
     paddleSubscriptionId String             @unique
     status               SubscriptionStatus
@@ -135,7 +134,7 @@ model Subscription {
 
     updatedAt DateTime @updatedAt
 
-    @@index([userId])
+    @@index([siteId])
     @@index([productId])
 }
 
@@ -151,7 +150,7 @@ enum SubscriptionStatus {
 
 model SitesUsers {
     userId String
-    siteId Int
+    siteId String
     role   UserRole
 
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -168,12 +167,12 @@ enum UserRole {
 model SiteInviteLink {
     createdAt DateTime @default(now())
     key       String   @id
-    siteId    Int
+    siteId    String
     site      Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
 }
 
 model Site {
-    id   Int     @id @default(autoincrement())
+    id   String  @id @default(cuid())
     name String?
 
     users SitesUsers[]
@@ -184,12 +183,13 @@ model Site {
     updatedAt       DateTime         @default(now()) @updatedAt
     routes          Route[]
     invitationLinks SiteInviteLink[]
+    subscriptions   Subscription[]
 }
 
 model Domain {
-    id         Int        @id @default(autoincrement())
+    id         String     @id @default(cuid())
     host       String     @unique
-    siteId     Int
+    siteId     String
     domainType DomainType
     site       Site       @relation(fields: [siteId], references: [id], onDelete: Cascade)
 
@@ -202,8 +202,8 @@ enum DomainType {
 }
 
 model Route {
-    id        Int    @id @default(autoincrement()) // use Int to preserve memory if a site has many routes
-    siteId    Int
+    id        String @id @default(cuid()) // use Int to preserve memory if a site has many routes
+    siteId    String
     basePath  String // if basePath is / then it is a fallback route
     targetUrl String @db.Text
     site      Site   @relation(fields: [siteId], references: [id], onDelete: Cascade)
