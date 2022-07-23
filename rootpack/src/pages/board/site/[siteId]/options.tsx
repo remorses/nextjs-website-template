@@ -1,6 +1,6 @@
 import { createInviteLink, removeUserFromSite } from '@app/pages/api/invites'
 import { refreshSsr } from '@app/utils'
-import { getSiteLimits, requiresAuth } from '@app/utils/ssr'
+import { getSiteLimits, redirectOnNoSite, requiresAuth } from '@app/utils/ssr'
 import {
     AlertDialog,
     AlertDialogBody,
@@ -268,7 +268,7 @@ function DeleteBlock({ site, style }: { site: Site; style?: CSSProperties }) {
                 title: 'Deleted',
                 description: 'Successfully deleted site',
             })
-            router.replace('/dashboard')
+            await router.replace('/board')
         } catch (e) {
             toast({ title: 'Error', description: e.message, status: 'error' })
         } finally {
@@ -350,9 +350,7 @@ export const getServerSideProps = requiresAuth(
         })
 
         if (!site) {
-            return {
-                notFound: true,
-            }
+            return redirectOnNoSite
         }
         const { sub, limits } = await getSiteLimits(siteId)
         return {

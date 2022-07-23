@@ -13,7 +13,7 @@ import { MyFooter, MyNavbar } from '@app/components/specific'
 import { ChakraProvider, Heading, Input } from '@chakra-ui/react'
 import classNames from 'classnames'
 import clsx from 'classnames'
-import { signIn, useSession } from 'next-auth/react'
+import { getSession, signIn, useSession } from 'next-auth/react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
@@ -89,7 +89,7 @@ export function Form({}) {
                     routes: [{ basePath: '/', targetUrl: fallback }],
                     setAsDefault: true,
                 })
-
+                await getSession({})
                 await router.push(`/board/site/${site.id}`)
             } catch (e) {
                 throw e

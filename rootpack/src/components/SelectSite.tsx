@@ -12,18 +12,26 @@ import { Select } from 'beskar/src/Select'
 
 import { Input, Button, Divider, Modal, Spinner } from 'beskar/src/landing'
 import { getUserSites } from '@app/pages/api/functions'
+import { validSubscriptionFilter } from 'db/data'
+import { toast } from 'react-hot-toast'
 
 export function SelectSite({ className = '' }) {
     const { data, error, isValidating } = useSWR('getSites', getUserSites)
     // console.log({ data })
     const sites = data?.sites || []
-
-    if (error) {
-        console.error(error)
-    }
+    useEffect(() => {
+        if (error) {
+            toast(error.message)
+        }
+    }, [error])
 
     const router = useRouter()
     const siteId = (router.query.siteId || '') as string
+    useEffect(() => {
+        if (sites.length && !siteId) {
+            router.push(`/board/site/${sites[0].id}`)
+        }
+    }, [sites, siteId])
 
     const { fn: onChange, isLoading: isOrgLoading } = useThrowingFn({
         fn: async function onChange(value) {
@@ -56,7 +64,10 @@ export function SelectSite({ className = '' }) {
                 onChange={onChange}
                 className={classNames('min-w-[16ch]', className)}
                 endButton={
-                    <Select.SelectButton children='New Site' onClick={onClick} />
+                    <Select.SelectButton
+                        children='New Site'
+                        onClick={onClick}
+                    />
                 }
                 options={sites.map((o) => {
                     return {

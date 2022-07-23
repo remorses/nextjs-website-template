@@ -12,7 +12,7 @@ import {
 import { TabLink } from 'beskar/src/Tabs'
 import { Alert, Block, SaveButton, TableBlock } from 'beskar/dashboard'
 import { useRouter } from 'next/router'
-import { requiresAuth } from '@app/utils/ssr'
+import { redirectOnNoSite, requiresAuth } from '@app/utils/ssr'
 import { prisma, Route } from 'db'
 import { InferGetServerSidePropsType } from 'next/types'
 import { Fragment, useState } from 'react'
@@ -148,7 +148,7 @@ export const Tabs = () => {
             <TabLink
                 key='upgrade'
                 aria-label='upgrade'
-                href='/dashboard/upgrade'
+                href='/board/upgrade'
                 icon={<CreditCardIcon className={iconClass} />}
                 isUpgradeButton
             >
@@ -179,9 +179,7 @@ export const getServerSideProps = requiresAuth(
             },
         })
         if (!site) {
-            return {
-                notFound: true,
-            }
+            return redirectOnNoSite
         }
         return {
             props: {

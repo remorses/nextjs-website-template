@@ -58,16 +58,23 @@ export const deleteSite = async ({ siteId }) => {
 
     const { userId } = await getJwt({ req })
 
-    const admin = await prisma.sitesUsers.findFirst({
+    const users = await prisma.sitesUsers.findMany({
         where: {
             siteId,
             userId,
-            role: 'ADMIN',
+            // role: 'ADMIN',
         },
     })
-    if (!admin) {
+    if (users.find((x) => x.role === 'ADMIN')?.userId !== userId) {
         throw new KnownError(`You are not admin of this site`)
     }
+    // TODO what to do with defaultSiteId?
+    // await prisma.user.updateMany({
+    //     where: { id: { in: users.map((x) => x.userId) } },
+    //     data: {
+    //         defaultSiteId: '',
+    //     },
+    // })
     const site = await prisma.site.delete({
         where: {
             id: siteId,

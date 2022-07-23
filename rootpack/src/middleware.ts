@@ -12,7 +12,7 @@ export default async function middleware(req: NextRequest, ev: NextFetchEvent) {
     try {
         let pathname = req.nextUrl.pathname
 
-        if (pathname.startsWith('/board/')) {
+        if (pathname.startsWith('/board')) {
             const jwt = await getToken({
                 req: req,
                 // cookieName: nextAuthOptions?.cookies?.sessionToken?.name,
