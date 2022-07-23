@@ -415,7 +415,7 @@ export async function deleteRoute({ routeId, siteId }) {
         throw new KnownError(`Route not found`)
     }
     if (route.basePath === '/') {
-        throw new KnownError(`Cannot delete / route`)
+        throw new KnownError(`Cannot delete root / route`)
     }
     // mark site to be refetched by proxy
     await prisma.site.update({
