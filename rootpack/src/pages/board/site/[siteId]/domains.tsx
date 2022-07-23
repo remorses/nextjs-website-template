@@ -38,6 +38,9 @@ import { Tabs } from './index'
 import toast from 'react-hot-toast'
 import { deleteCustomDomain } from '@app/pages/api/functions'
 
+// TODO update with fly.io ip
+const IP = '0.0.0.0'
+
 function Page({
     site,
     userId,
@@ -246,7 +249,7 @@ function DNSModal({}) {
                                 [
                                     'A',
                                     host ? `${subdomain}` : '@',
-                                    '76.76.21.21',
+                                    IP,
                                 ],
                             ]}
                         />

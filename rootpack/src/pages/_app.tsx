@@ -32,8 +32,8 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
                     Tabs={Tabs}
                     {...rest}
                 >
-                    <UpgradeModal />
                     {children}
+                    <UpgradeModal />
                 </DashboardLayout>
             )
         }
