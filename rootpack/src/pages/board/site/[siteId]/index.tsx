@@ -31,12 +31,34 @@ import classNames from 'classnames'
 import { deleteRoute } from '@app/pages/api/functions'
 import { Button as ChakraButton } from '@chakra-ui/react'
 import { refreshSsr } from '@app/utils'
+import { atom, useAtom } from 'jotai'
+import { useUpdateAtom } from 'jotai/utils'
 
 function Page({
     site,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+    const noRoutes = site.routes.length <= 1
+    const updateRoutesModal = useUpdateAtom(routesAtom)
     return (
         <>
+            {/* {noRoutes && (
+                <Alert
+                    title='Create your first Route'
+                    description={
+                        <div>
+                            <button
+                                className=' appearance-none font-semibold underline'
+                                onClick={() => {
+                                    updateRoutesModal({ isOpen: true })
+                                }}
+                            >
+                                Add your first
+                            </button>{' '}
+                            route to your site.
+                        </div>
+                    }
+                />
+            )} */}
             <div className='text-4xl font-semibold capitalize'>{site.name}</div>
             <Block className='flex flex-col w-full px-6 py-6 space-y-6'>
                 <div className='flex flex-col space-y-3'>
@@ -67,6 +89,8 @@ function Page({
     )
 }
 
+const routesAtom = atom({ isOpen: false })
+
 function RoutesBlock({
     routes,
     bestHost,
@@ -74,12 +98,15 @@ function RoutesBlock({
     routes: Route[]
     bestHost: string
 }) {
-    const { isOpen, onOpen, onClose } = useDisclosure()
+    const [{ isOpen }, setState] = useAtom(routesAtom)
+    const onOpen = () => setState({ isOpen: true })
+    const onClose = () => setState({ isOpen: false })
     const [initialRoute, setInitialRoute] = useState<Partial<Route>>()
     let wClass = `gap-3 [&>*]:!w-[33%]`
     let href = `https://${bestHost}`
     const router = useRouter()
     const siteId = router.query.siteId as string
+    const noRoutes = routes.length <= 1
     // routes =
     return (
         <>
@@ -130,9 +157,9 @@ function RoutesBlock({
                         // bg='blue.500'
                         // bgDark='blue.300'
                         // className='text-sm'
-
                         children='Add Route'
                         size={'sm'}
+                        colorScheme={noRoutes ? 'blue' : 'gray'}
                         onClick={() => {
                             setInitialRoute({
                                 basePath: '',

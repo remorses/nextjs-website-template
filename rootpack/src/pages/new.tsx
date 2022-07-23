@@ -120,7 +120,7 @@ export function Form({}) {
             >
                 <form
                     onSubmit={handleSubmit(onSubmit)}
-                    className='mx-6 min-w-[500px]'
+                    className='mx-6 lg:min-w-[500px]'
                 >
                     <BlockWithStep step={1} className=''>
                         <div className=''>Name</div>
