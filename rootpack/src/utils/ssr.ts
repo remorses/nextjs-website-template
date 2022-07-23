@@ -87,3 +87,69 @@ export const redirectionOnNoSite = {
         permanent: false,
     },
 }
+
+const pricesCurrency = 'USD'
+export async function getPricingProducts() {
+    const isSandbox = Boolean(false) // TODO env.NEXT_PUBLIC_IS_PADDLE_SANDBOX)
+    console.log('is paddle sandbox?', isSandbox)
+    const products = await prisma.product.findMany({
+        where: {
+            active: true,
+            isSandbox,
+        },
+        include: {
+            prices: true,
+        },
+    })
+
+    const freeProduct = {
+        isSandbox,
+        active: true,
+        billing_period: 1,
+        billing_type: 'month',
+        name: 'Free',
+        image: '',
+        trial_days: 0,
+        paddleId: 'free',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        prices: [
+            {
+                isSandbox,
+                paddleId: 'Free',
+                currency: pricesCurrency,
+                unitAmount: 0,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+        ],
+    }
+    const enterpriseProduct = {
+        isSandbox,
+        active: true,
+        billing_period: 1,
+        billing_type: 'month',
+        name: 'Enterprise',
+        image: '',
+        trial_days: 0,
+        paddleId: 'Enterprise',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        prices: [
+            {
+                isSandbox,
+                paddleId: 'Enterprise',
+                currency: pricesCurrency,
+                unitAmount: 2000 * 1000,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+        ],
+    }
+
+    products.push({ ...freeProduct, billing_type: 'month' })
+    products.push({ ...freeProduct, billing_type: 'year' })
+    products.push({ ...enterpriseProduct, billing_type: 'month' })
+    products.push({ ...enterpriseProduct, billing_type: 'year' })
+    return products
+}

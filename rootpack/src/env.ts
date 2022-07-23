@@ -7,6 +7,7 @@ export const env = {
     GOOGLE_ID: process.env.GOOGLE_ID,
     GOOGLE_SECRET: process.env.GOOGLE_SECRET,
     NEXT_PUBLIC_APPS_DOMAIN: process.env.NEXT_PUBLIC_APPS_DOMAIN,
+    // NEXT_PUBLIC_IS_PADDLE_SANDBOX: process.env.NEXT_PUBLIC_IS_PADDLE_SANDBOX,
 }
 
 if (typeof window === 'undefined') {

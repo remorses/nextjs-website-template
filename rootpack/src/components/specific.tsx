@@ -18,12 +18,14 @@ import {
 } from '@heroicons/react/outline'
 import { Avatar } from '@nextui-org/react'
 
-import { signOut, useSession } from 'next-auth/react'
+import { signIn, signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { AvatarButton } from 'beskar/src/Header'
 import { DropDownMenu } from 'beskar/src/DropDown'
 import { SelectSite } from './SelectSite'
 import { getSubscription } from '@app/pages/api/functions'
+import { SVGProps } from 'react'
+import classNames from 'classnames'
 
 export function MyHeader({}) {
     const router = useRouter()
@@ -31,7 +33,7 @@ export function MyHeader({}) {
         <DashboardHeader
             logo={
                 <div className='flex flex-col gap-3'>
-                    <Logo />
+                    <Logo className='!text-3xl' />
                     <SelectSite
                         // there is no site in user settings, just keep loading state
                         doNotRedirect={router.asPath === '/board/settings'}
@@ -55,6 +57,7 @@ export function MyNavbar({}) {
             navs={[
                 <Link href=''>Docs</Link>,
                 <Link href=''>Changelog</Link>, //
+                <LoginLink />,
             ]}
         />
     )
@@ -131,11 +134,19 @@ function AvatarMenu({ imgSrc = '' }) {
     )
 }
 
-export function Logo({}) {
+export function Logo({ className = '' }) {
     // const { status } = useSession()
     return (
         <NextLink href={'/'} passHref>
-            <a className='text-2xl font-semibold '>RootPack</a>
+            <a
+                className={classNames(
+                    'flex items-center space-x-3 text-4xl font-semibold ',
+                    className,
+                )}
+            >
+                <LogoIcon className='' />
+                <div className=''>RootPack</div>
+            </a>
         </NextLink>
     )
 }
@@ -215,5 +226,53 @@ export function MyPricing({
                 ...rest,
             }}
         />
+    )
+}
+
+export function LoginLink({}) {
+    const { status } = useSession()
+    const router = useRouter()
+    return (
+        <div key={status} className='max-w-[14ch] text-left md:text-center'>
+            {status === 'authenticated' ? (
+                <Link onClick={() => router.push('/board')}>
+                    Go to Dashboard
+                </Link>
+            ) : (
+                <Link
+                    data-name='login'
+                    onClick={() =>
+                        signIn(
+                            undefined,
+                            {
+                                callbackUrl: '/board',
+                                redirect: true,
+                            },
+                            { prompt: 'select_account' },
+                        )
+                    }
+                >
+                    Login or Sign Up
+                </Link>
+            )}
+        </div>
+    )
+}
+
+export function LogoIcon(props: SVGProps<SVGSVGElement>) {
+    return (
+        <svg
+            xmlns='http://www.w3.org/2000/svg'
+            xmlnsXlink='http://www.w3.org/1999/xlink'
+            width='1em'
+            height='1em'
+            viewBox='0 0 24 24'
+            {...props}
+        >
+            <path
+                fill='currentColor'
+                d='M13 8V4q0-.425.288-.713Q13.575 3 14 3h6q.425 0 .712.287Q21 3.575 21 4v4q0 .425-.288.712Q20.425 9 20 9h-6q-.425 0-.712-.288Q13 8.425 13 8ZM3 12V4q0-.425.288-.713Q3.575 3 4 3h6q.425 0 .713.287Q11 3.575 11 4v8q0 .425-.287.712Q10.425 13 10 13H4q-.425 0-.712-.288Q3 12.425 3 12Zm10 8v-8q0-.425.288-.713Q13.575 11 14 11h6q.425 0 .712.287q.288.288.288.713v8q0 .425-.288.712Q20.425 21 20 21h-6q-.425 0-.712-.288Q13 20.425 13 20ZM3 20v-4q0-.425.288-.713Q3.575 15 4 15h6q.425 0 .713.287q.287.288.287.713v4q0 .425-.287.712Q10.425 21 10 21H4q-.425 0-.712-.288Q3 20.425 3 20Z'
+            ></path>
+        </svg>
     )
 }
