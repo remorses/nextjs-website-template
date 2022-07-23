@@ -5,6 +5,7 @@ const enforceSingleVersion = [
     'next-auth',
     'next',
     '@prisma/client',
+    'next-themes',
     '@chakra-ui/react',
     '@nextui-org/react',
 ]

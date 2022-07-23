@@ -22,13 +22,14 @@ import { useForm } from 'react-hook-form'
 import { AppError } from '@app/utils/errors'
 import { createSite } from './api/functions'
 import { validateUrl } from '@app/utils'
+import { ChakraStuff } from 'beskar/src/chakra'
 
 export default function Page() {
     return (
-        <ChakraProvider>
+        <ChakraStuff>
             <div
                 className={clsx(
-                    'flex bg-white flex-col items-stretch relative space-y-[30px]',
+                    'flex bg-white dark:bg-gray-900 dark:text-gray-100 flex-col items-stretch relative space-y-[30px]',
                     'md:space-y-[30px] min-h-screen',
                 )}
             >
@@ -71,7 +72,7 @@ export default function Page() {
                 <div className='grow'></div>
                 <MyFooter />
             </div>
-        </ChakraProvider>
+        </ChakraStuff>
     )
 }
 
@@ -113,7 +114,7 @@ export function Form({}) {
         <div className='flex flex-col items-center pt-10 '>
             <div
                 className={clsx(
-                    'flex w-full flex-col items-center bg-gray-100 rounded-lg px-20 pb-10',
+                    'flex w-full flex-col items-center bg-gray-100 dark:bg-gray-800 rounded-lg px-20 pb-10',
                     'border max-w-[var(--pageWidth)]',
                 )}
             >
@@ -122,9 +123,8 @@ export function Form({}) {
                     className='mx-6 min-w-[500px]'
                 >
                     <BlockWithStep step={1} className=''>
-                        <div className=''>Enter Name</div>
+                        <div className=''>Name</div>
                         <Input
-                            bg='white'
                             placeholder='Name'
                             aria-label='name'
                             {...register('name', {
@@ -140,8 +140,10 @@ export function Form({}) {
                     </BlockWithStep>
                     <BlockWithStep step={2} className=''>
                         <div className=''>Main url</div>
+                        <div className='opacity-60'>
+                            The website you want to serve traffic from
+                        </div>
                         <Input
-                            bg='white'
                             placeholder='https://example.com'
                             aria-label='fallback'
                             {...register('fallback', {
@@ -157,7 +159,7 @@ export function Form({}) {
                         <div className='flex flex-col items-center space-y-4'>
                             <Button
                                 type='submit'
-                                className='text-white min-w-[20ch]'
+                                className='min-w-[20ch]'
                                 disabled={disabled}
                                 isLoading={isLoading}
                             >

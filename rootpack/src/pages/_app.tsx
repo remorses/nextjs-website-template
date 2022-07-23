@@ -53,7 +53,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
             }
         }
     }, [])
-    const forcedTheme = !isDashboard ? 'light' : undefined
+    const forcedTheme = undefined // !isDashboard ? 'light' : undefined
 
     return (
         <SessionProvider session={session}>

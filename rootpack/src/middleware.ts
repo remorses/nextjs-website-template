@@ -22,7 +22,7 @@ export default async function middleware(req: NextRequest, ev: NextFetchEvent) {
                 return NextResponse.redirect(new URL(`/`, req.nextUrl.origin))
             }
         }
-        if (pathname === '/') {
+        if (pathname === '/' || pathname === '/board') {
             const jwt = await getToken({
                 req: req,
                 // cookieName: nextAuthOptions?.cookies?.sessionToken?.name,
