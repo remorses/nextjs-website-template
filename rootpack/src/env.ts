@@ -9,9 +9,10 @@ export const env = {
     NEXT_PUBLIC_APPS_DOMAIN: process.env.NEXT_PUBLIC_APPS_DOMAIN,
 }
 
-if (typeof process !== 'undefined') {
+if (typeof window === 'undefined') {
     for (const k in env) {
         if (!env[k]) {
+            console.error(env)
             throw new Error(`Missing required ssr env var '${k}'`)
         }
     }

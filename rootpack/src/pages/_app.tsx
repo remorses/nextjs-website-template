@@ -15,6 +15,7 @@ import { NextUiStuff } from 'beskar/src/nextui'
 import { MyFooter, MyHeader } from '@app/components/specific'
 import colors from 'tailwindcss/colors'
 import React from 'react'
+import { UpgradeModal } from '@app/components/UpgradeModal'
 
 const DashboardLayout = React.lazy(() => import('beskar/src/DashboardLayout'))
 
@@ -31,6 +32,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
                     Tabs={Tabs}
                     {...rest}
                 >
+                    <UpgradeModal />
                     {children}
                 </DashboardLayout>
             )

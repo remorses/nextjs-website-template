@@ -4,6 +4,8 @@ import {
     Footer,
     Link,
     NavBar,
+    Pricing,
+    PricingProps,
     useColorMode,
     useColorModeValue,
 } from 'beskar/landing'
@@ -21,6 +23,7 @@ import { useRouter } from 'next/router'
 import { AvatarButton } from 'beskar/src/Header'
 import { DropDownMenu } from 'beskar/src/DropDown'
 import { SelectSite } from './SelectSite'
+import { getSubscription } from '@app/pages/api/functions'
 
 export function MyHeader({}) {
     return (
@@ -130,5 +133,83 @@ export function Logo({}) {
         <NextLink href={'/'} passHref>
             <a className='text-2xl font-semibold '>RootPack</a>
         </NextLink>
+    )
+}
+
+const CONTACT_US_LINK = 'mailto:tommy@notaku.website'
+
+const productDetails: PricingProps['productDetails'] = {
+    Free: {
+        description: '1k views / month',
+        features: [
+            '1k views / month',
+            'notaku.site subdomain',
+            'No branding', //
+        ],
+    },
+    Startup: {
+        description: '10k views / month',
+        features: [
+            '10k views / month',
+            '3 Custom domains',
+            'Single user',
+            'Basic branding',
+            'User feedback collection',
+            'Password protection',
+            'Auto sync with Notion every hour',
+        ],
+    },
+    Business: {
+        description: '100k views / month',
+        features: [
+            '100k views / month',
+            '6 Custom domains',
+            'Invite up to 5 users',
+            'Advanced branding',
+            'User feedback collection',
+            'Password protection',
+            'Auto sync with Notion every hour',
+        ],
+    },
+}
+
+// TODO add another pricing over 100k for 99 a month
+productDetails.Enterprise = {
+    description: 'Unlimited views',
+    contactLink: CONTACT_US_LINK,
+    features: ['Unlimited views', ...productDetails.Business.features.slice(3)],
+}
+
+export function MyPricing({
+    onCheckout,
+    siteId,
+    ...rest
+}: Partial<PricingProps> & { siteId: string }) {
+    const router = useRouter()
+    return (
+        <Pricing
+            {...{
+                products: [],
+                async getSubscription() {
+                    const d = await getSubscription({ siteId })
+                    if (d?.subscription?.product?.billing_type === 'lifetime') {
+                        // lifetime deals cannot be upgraded
+                        return null
+                    }
+                    return d.subscription
+                },
+                async updatePlan(data) {
+                    // TODO update plan api function
+                    // return await updatePlan(data)
+                },
+                productDetails,
+                manageSubscriptionHref: `/board/site/${siteId}/settings`,
+                onCheckout(arg) {
+                    router.push(`/board/site/${siteId}`)
+                    onCheckout && onCheckout(arg)
+                },
+                ...rest,
+            }}
+        />
     )
 }
