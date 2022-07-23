@@ -1,8 +1,1 @@
-{
-    "files.exclude": {
-        "website/**": true
-    },
-    "search.exclude": {
-        "website/**": true
-    }
-}
+{}
