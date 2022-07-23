@@ -1,6 +1,6 @@
 import { createInviteLink, removeUserFromSite } from '@app/pages/api/invites'
 import { refreshSsr } from '@app/utils'
-import { getSiteLimits, redirectOnNoSite, requiresAuth } from '@app/utils/ssr'
+import { getSiteLimits, redirectionOnNoSite, requiresAuth } from '@app/utils/ssr'
 import {
     AlertDialog,
     AlertDialogBody,
@@ -350,7 +350,7 @@ export const getServerSideProps = requiresAuth(
         })
 
         if (!site) {
-            return redirectOnNoSite
+            return redirectionOnNoSite
         }
         const { sub, limits } = await getSiteLimits(siteId)
         return {

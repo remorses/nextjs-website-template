@@ -81,7 +81,7 @@ export async function getSiteLimits(siteId: string) {
     return { sub, limits: mergePlanLimits(subs.map((x) => x.productId)), subs }
 }
 
-export const redirectOnNoSite = {
+export const redirectionOnNoSite = {
     redirect: {
         destination: '/board',
         permanent: false,

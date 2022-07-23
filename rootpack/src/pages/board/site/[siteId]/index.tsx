@@ -12,7 +12,7 @@ import {
 import { TabLink } from 'beskar/src/Tabs'
 import { Alert, Block, SaveButton, TableBlock } from 'beskar/dashboard'
 import { useRouter } from 'next/router'
-import { redirectOnNoSite as redirectionOnNoSite, requiresAuth } from '@app/utils/ssr'
+import { redirectionOnNoSite as redirectionOnNoSite, requiresAuth } from '@app/utils/ssr'
 import { prisma, Route } from 'db'
 import { InferGetServerSidePropsType } from 'next/types'
 import { Fragment, useState } from 'react'

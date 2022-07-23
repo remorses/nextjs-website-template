@@ -5,7 +5,7 @@ import { Link, useThrowingFn } from 'beskar/landing'
 import { env } from '@app/env'
 
 import { fetchWithTimeout } from '@app/utils'
-import { getSiteLimits, redirectOnNoSite, requiresAuth } from '@app/utils/ssr'
+import { getSiteLimits, redirectionOnNoSite, requiresAuth } from '@app/utils/ssr'
 import {
     Button,
     IconButton,
@@ -199,7 +199,7 @@ export const getServerSideProps = requiresAuth(
             },
         })
         if (!site) {
-            return redirectOnNoSite
+            return redirectionOnNoSite
         }
         const { sub: subscription, limits } = await getSiteLimits(siteId)
         return {
