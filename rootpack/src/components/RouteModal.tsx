@@ -72,7 +72,7 @@ export function RouteModal({ initialRoute, isOpen, onClose }) {
                     <Input
                         ref={initialFocusRef}
                         label='Base Path'
-                        description='The base path of the route'
+                        description='The website will be available on this path'
                         // underlined
                         placeholder='/path'
                         // helperColor='error'
@@ -91,7 +91,7 @@ export function RouteModal({ initialRoute, isOpen, onClose }) {
                     />
                     <Input
                         label='Target Url'
-                        description='The traffic will go to the following url'
+                        description='The website to host on the above path'
                         placeholder='https://example.com'
                         // helperColor='error'
                         {...register('targetUrl', {

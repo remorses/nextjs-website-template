@@ -1,7 +1,7 @@
 // images
 import svgBg1 from '@app/../public/landing-page/gradient-bg-sketch.svg'
 
-import heroImage from '@app/../public/hero_image.png'
+import heroImage from '@app/../public/hero_image@1x.svg'
 
 import {
     Button,
