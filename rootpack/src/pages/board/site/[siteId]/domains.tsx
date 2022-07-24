@@ -326,10 +326,13 @@ DomainStatus.displayName = 'DomainStatus'
 const isSiteUp = memoize(
     async function isSiteUp({ domain }) {
         try {
-            const res = await fetchWithTimeout(`https://${domain}/__health`, {
-                timeout: 4000,
-                method: 'GET',
-            })
+            const res = await fetchWithTimeout(
+                `https://${domain}/__check_health`,
+                {
+                    timeout: 4000,
+                    method: 'GET',
+                },
+            )
             return res.ok
         } catch (e) {
             return false
