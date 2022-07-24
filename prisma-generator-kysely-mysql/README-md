@@ -1,0 +1,25 @@
+## prisma-generator-kysely-mysql
+
+> ** Still in development. Breaking changes at any time **
+
+Generator a kysely client (only for Mysql for now) for prisma.
+
+## Usage
+
+```prisma
+generator kysely {
+    provider = "prisma-generator-kysely-mysql"
+    output   = "kysely-client"
+    // pass query to mysql2
+    query    = "ssl={\"rejectUnauthorized\":true}"
+}
+
+datasource db {
+    provider             = "mysql"
+    // generated code will use same env variable to get uri
+    url                  = env("DATABASE_URL")
+    referentialIntegrity = "prisma"
+}
+
+
+```
